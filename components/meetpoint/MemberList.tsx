@@ -19,7 +19,7 @@ export function MemberList({ members, stations, onUpdate, onRemove, onAdd }: Mem
       <div className="flex flex-col gap-2 mb-2">
         {members.map((m, i) => (
           <div key={m.id} className="grid grid-cols-[56px_1fr] gap-2.5 items-start">
-            <div className="h-9 flex items-center justify-center bg-bg-soft border border-line rounded-sm text-[11px] font-medium text-fg-2 whitespace-nowrap">
+            <div className="h-9 flex items-center justify-center bg-soft border border-line rounded-sm text-[11px] font-medium text-fg-2 whitespace-nowrap">
               {i + 1}人目
             </div>
             <StationInput
@@ -34,7 +34,7 @@ export function MemberList({ members, stations, onUpdate, onRemove, onAdd }: Mem
         ))}
       </div>
       <button
-        className="inline-flex items-center gap-1.5 px-2.5 h-[30px] bg-transparent border border-dashed border-line-2 rounded-sm text-fg-2 text-xs cursor-pointer transition-all hover:bg-bg-soft hover:text-fg hover:border-fg-3 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-1.5 px-2.5 h-[30px] bg-transparent border border-dashed border-line-2 rounded-sm text-fg-2 text-xs cursor-pointer transition-all hover:bg-soft hover:text-fg hover:border-fg-3 disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={onAdd}
         disabled={members.length >= 10}
       >

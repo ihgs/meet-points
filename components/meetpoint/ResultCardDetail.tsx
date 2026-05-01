@@ -13,7 +13,7 @@ type ResultCardDetailProps = {
 export function ResultCardDetail({ result, rank, maxTime, style }: ResultCardDetailProps) {
   return (
     <div
-      className="bg-bg-card border border-line rounded-lg p-[18px] transition-colors hover:border-line-2 animate-card-in"
+      className="bg-card border border-line rounded-lg p-[18px] transition-colors hover:border-line-2 animate-card-in"
       style={style}
     >
       <div className="flex justify-between items-start mb-4">
@@ -36,7 +36,7 @@ export function ResultCardDetail({ result, rank, maxTime, style }: ResultCardDet
           { v: `¥${result.totalFare}`, u: '', l: '合計運賃' },
           { v: result.maxTransfers, u: '回', l: '最大乗換' },
         ].map(({ v, u, l }) => (
-          <div key={l} className="bg-bg-card p-3 text-center">
+          <div key={l} className="bg-card p-3 text-center">
             <div className="font-num text-lg font-semibold tracking-tight">
               {v}{u && <small className="text-[11px] text-fg-3 ml-px">{u}</small>}
             </div>
@@ -55,7 +55,7 @@ export function ResultCardDetail({ result, rank, maxTime, style }: ResultCardDet
         <div className="flex flex-col gap-1">
           {result.routes.map((r, i) => (
             <div key={i} className="flex items-center gap-2 text-xs text-fg-2 py-1 flex-wrap">
-              <span className="font-num text-[10px] bg-bg-soft px-1.5 py-0.5 rounded-[3px] text-fg-3">{i + 1}人目</span>
+              <span className="font-num text-[10px] bg-soft px-1.5 py-0.5 rounded-[3px] text-fg-3">{i + 1}人目</span>
               <RoutePath route={r.route} />
               <span className="text-fg-3 font-num text-[11px] ml-auto whitespace-nowrap">{r.route.minutes}分・¥{r.route.fare}・乗換{r.route.transfers}回</span>
             </div>
@@ -68,7 +68,7 @@ export function ResultCardDetail({ result, rank, maxTime, style }: ResultCardDet
           <div className="text-[11px] text-fg-3 uppercase tracking-[0.06em] mb-1.5">駅周辺</div>
           <div className="flex flex-wrap gap-1">
             {result.tags.map(t => (
-              <span key={t} className="text-[11px] text-fg-2 bg-bg-soft border border-line px-2 py-0.5 rounded-full">{t}</span>
+              <span key={t} className="text-[11px] text-fg-2 bg-soft border border-line px-2 py-0.5 rounded-full">{t}</span>
             ))}
           </div>
         </div>

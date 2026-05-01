@@ -11,7 +11,7 @@ type ResultCardRankingProps = {
 export function ResultCardRanking({ result, rank, maxTime, isFirst, style }: ResultCardRankingProps) {
   return (
     <div
-      className={`bg-bg-card border rounded-lg grid grid-cols-[56px_1fr] p-4 gap-4 transition-colors hover:border-line-2 animate-card-in ${isFirst ? 'border-accent shadow-[0_0_0_3px_var(--color-accent-soft)]' : 'border-line'}`}
+      className={`bg-card border rounded-lg grid grid-cols-[56px_1fr] p-4 gap-4 transition-colors hover:border-line-2 animate-card-in ${isFirst ? 'border-accent shadow-[0_0_0_3px_var(--color-accent-soft)]' : 'border-line'}`}
       style={style}
     >
       <div className="flex flex-col items-center gap-1 border-r border-line pr-4">
@@ -31,7 +31,7 @@ export function ResultCardRanking({ result, rank, maxTime, isFirst, style }: Res
           </h4>
           <div className="flex gap-1 flex-wrap">
             {result.tags.slice(0, 3).map(t => (
-              <span key={t} className="text-[10px] text-fg-2 bg-bg-soft border border-line px-1.5 py-px rounded-full">{t}</span>
+              <span key={t} className="text-[10px] text-fg-2 bg-soft border border-line px-1.5 py-px rounded-full">{t}</span>
             ))}
           </div>
         </div>

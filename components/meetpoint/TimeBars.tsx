@@ -13,7 +13,7 @@ export function TimeBars({ routes, max }: TimeBarsProps) {
         return (
           <div key={i} className="grid grid-cols-[24px_1fr_56px] gap-2.5 items-center">
             <span className="font-num text-[11px] text-fg-3 text-center">{i + 1}</span>
-            <div className="h-[18px] bg-bg-soft rounded overflow-hidden">
+            <div className="h-[18px] bg-soft rounded overflow-hidden">
               <div className="h-full bg-accent rounded transition-[width]" style={{ width: `${w}%` }} />
             </div>
             <span className="font-num text-xs text-right text-fg-2">

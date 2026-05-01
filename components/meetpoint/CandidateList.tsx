@@ -37,7 +37,7 @@ export function CandidateList({ candidates, stations, onUpdate, onRemove, onAdd 
         </div>
       )}
       <button
-        className="inline-flex items-center gap-1.5 px-2.5 h-[30px] bg-transparent border border-dashed border-line-2 rounded-sm text-fg-2 text-xs cursor-pointer transition-all hover:bg-bg-soft hover:text-fg hover:border-fg-3"
+        className="inline-flex items-center gap-1.5 px-2.5 h-[30px] bg-transparent border border-dashed border-line-2 rounded-sm text-fg-2 text-xs cursor-pointer transition-all hover:bg-soft hover:text-fg hover:border-fg-3"
         onClick={onAdd}
       >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">

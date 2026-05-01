@@ -18,7 +18,7 @@ type MeetPointViewProps = {
 };
 
 const tabBtn = (active: boolean) =>
-  `bg-transparent border-0 px-2.5 py-[5px] text-xs rounded-[5px] cursor-pointer ${active ? 'bg-fg text-bg' : 'text-fg-2'}`;
+  `bg-transparent border-0 px-2.5 py-[5px] text-xs rounded-[5px] cursor-pointer ${active ? 'bg-fg text-base' : 'text-fg-2'}`;
 
 export function MeetPointView({ initialMembers, initialCandidates }: MeetPointViewProps) {
   const [stations, setStations] = useState<Station[]>([]);
@@ -86,9 +86,9 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex items-center justify-between px-7 py-4 border-b border-line bg-bg sticky top-0 z-10">
+      <header className="flex items-center justify-between px-7 py-4 border-b border-line bg-base sticky top-0 z-10">
         <div className="flex items-center gap-2.5 font-semibold text-base tracking-tight">
-          <div className="size-[26px] bg-fg rounded-[7px] grid place-items-center text-bg">
+          <div className="size-[26px] bg-fg rounded-[7px] grid place-items-center text-base">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <circle cx="6" cy="12" r="2.2" /><circle cx="18" cy="12" r="2.2" />
               <path d="M8.2 12h7.6" />
@@ -99,12 +99,12 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
         </div>
         <div className="flex items-center gap-3.5 text-fg-3 text-xs">
           <span>{stations.length > 0 ? `${stations.length}駅対応` : '東京近郊 30駅対応'}</span>
-          <kbd className="font-num text-[11px] px-1.5 py-0.5 border border-line rounded-sm bg-bg-soft">v0.1</kbd>
+          <kbd className="font-num text-[11px] px-1.5 py-0.5 border border-line rounded-sm bg-soft">v0.1</kbd>
         </div>
       </header>
 
       <div className="flex-1 grid grid-cols-[380px_1fr] max-[900px]:grid-cols-1 min-h-0">
-        <aside className="border-r border-line max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-b-line px-6 pt-[22px] pb-[100px] bg-bg overflow-y-auto">
+        <aside className="border-r border-line max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-b-line px-6 pt-[22px] pb-[100px] bg-base overflow-y-auto">
           <MemberList
             members={members}
             stations={stations}
@@ -120,9 +120,9 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
             onAdd={addCandidate}
           />
 
-          <div className="sticky bottom-0 -mx-6 -mb-[100px] mt-[14px] px-6 pb-6 pt-[14px]" style={{ background: 'linear-gradient(to top, var(--color-bg) 60%, transparent)' }}>
+          <div className="sticky bottom-0 -mx-6 -mb-[100px] mt-[14px] px-6 pb-6 pt-[14px]" style={{ background: 'linear-gradient(to top, var(--color-base) 60%, transparent)' }}>
             <button
-              className="w-full h-[42px] border-0 rounded-sm bg-fg text-bg text-sm font-semibold cursor-pointer flex items-center justify-center gap-2 transition-opacity hover:opacity-90 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full h-[42px] border-0 rounded-sm bg-fg text-base text-sm font-semibold cursor-pointer flex items-center justify-center gap-2 transition-opacity hover:opacity-90 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
               disabled={!canSearch || loading}
               onClick={runSearch}
             >
@@ -143,7 +143,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
           </div>
         </aside>
 
-        <main className="px-7 pt-[22px] pb-[100px] overflow-y-auto bg-bg-soft">
+        <main className="px-7 pt-[22px] pb-[100px] overflow-y-auto bg-soft">
           <div className="flex items-baseline justify-between mb-[14px] flex-wrap gap-2.5">
             <div>
               <h2 className="m-0 text-lg font-semibold tracking-tight">
@@ -159,7 +159,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
             </div>
             <div className="flex items-center gap-2.5 flex-wrap">
               {sorted && sorted.length > 0 && !loading && (
-                <div className="flex items-center gap-1 p-[3px] bg-bg-card border border-line rounded-sm">
+                <div className="flex items-center gap-1 p-[3px] bg-card border border-line rounded-sm">
                   {(['balanced', 'time', 'fare', 'fairness'] as const).map((key, _, arr) => {
                     const labels = { balanced: 'バランス', time: '時間', fare: '運賃', fairness: '公平性' };
                     return (
@@ -171,7 +171,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
                 </div>
               )}
               {sorted && sorted.length > 0 && !loading && (
-                <div className="flex items-center gap-1 p-[3px] bg-bg-card border border-line rounded-sm">
+                <div className="flex items-center gap-1 p-[3px] bg-card border border-line rounded-sm">
                   {(['compact', 'detail', 'ranking'] as const).map(key => {
                     const labels = { compact: 'コンパクト', detail: '詳細', ranking: 'ランキング' };
                     return (
@@ -186,13 +186,13 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
           </div>
 
           {loading ? (
-            <div className="bg-bg-card border border-line rounded-lg px-8 py-12 text-center">
+            <div className="bg-card border border-line rounded-lg px-8 py-12 text-center">
               <div className="size-7 border-2 border-line border-t-accent rounded-full mx-auto mb-3.5 animate-spin" />
               <div className="text-fg-3 text-[13px]">各駅への所要時間を計算中…</div>
             </div>
           ) : !sorted || sorted.length === 0 ? (
-            <div className="bg-bg-card border border-dashed border-line rounded-lg px-8 py-14 text-center text-fg-3">
-              <div className="size-14 rounded-full bg-bg-soft mx-auto mb-4 grid place-items-center text-fg-3">
+            <div className="bg-card border border-dashed border-line rounded-lg px-8 py-14 text-center text-fg-3">
+              <div className="size-14 rounded-full bg-soft mx-auto mb-4 grid place-items-center text-fg-3">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" />
                 </svg>
