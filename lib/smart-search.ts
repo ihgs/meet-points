@@ -125,9 +125,6 @@ function reconstructRoute(endId: string, dijk: DijkResult): Route | null {
 
 // ─── スマート候補選定 ─────────────────────────────────────────────────────────
 
-const SLACK = 1.3;       // 最短経路の1.3倍以内を「経路上」と見なす
-const MIN_PAIR_RATIO = 0.5; // 全メンバーペアの50%以上で経路上 → Phase3候補
-
 export function smartSearch(
   memberIds: string[],
   graph: Record<string, GraphNode[]>,
@@ -137,48 +134,33 @@ export function smartSearch(
   if (memberIds.length === 0) return [];
 
   // Phase 1: 各メンバーからDijkstra（1人につき1回のみ）
+  // 計算量: O(N × E log V)  ← 旧: O(全駅 × N × E log V)
   const dijks = memberIds.map(id => dijkstraAll(id, graph));
 
-  // Phase 2: メンバーペアごとに「経路上の駅」を集計
-  //   駅 X が pair(i,j) の経路上 ⟺ dist[i][X] + dist[j][X] ≤ dist[i][j] × SLACK
-  const pairCount = new Map<string, number>(); // 駅 → 何ペアの経路上か
-  const totalPairs = memberIds.length * (memberIds.length - 1) / 2;
+  // Phase 2: 全メンバーから到達可能な駅を対象に、precompute済みdistでスコアリング
+  // 各駅のスコア計算は Map.get() + 四則演算のみ → O(N × |到達可能駅|)
+  type Scored = { candId: string; score: number; total: number; avg: number; std: number; fairness: number };
+  const scored: Scored[] = [];
 
-  for (let i = 0; i < memberIds.length; i++) {
-    for (let j = i + 1; j < memberIds.length; j++) {
-      const dIJ = dijks[i].dist.get(memberIds[j]) ?? Infinity;
-      if (!isFinite(dIJ)) continue;
-      const thresh = dIJ * SLACK;
+  for (const [candId] of dijks[0].dist) {
+    const times = memberIds.map((_, m) => dijks[m].dist.get(candId) ?? Infinity);
+    if (times.some(t => !isFinite(t))) continue; // いずれかのメンバーから到達不可
 
-      for (const [st, dI] of dijks[i].dist) {
-        if (dI >= thresh) continue;
-        const dJ = dijks[j].dist.get(st) ?? Infinity;
-        if (dI + dJ <= thresh) {
-          pairCount.set(st, (pairCount.get(st) ?? 0) + 1);
-        }
-      }
-    }
+    const total = times.reduce((a, b) => a + b, 0);
+    const avg = total / times.length;
+    const variance = times.reduce((s, t) => s + (t - avg) ** 2, 0) / times.length;
+    const std = Math.sqrt(variance);
+    const fairness = Math.max(0, Math.min(100, Math.round(100 - std * 5)));
+    const score = total + (100 - fairness) * 0.5;
+    scored.push({ candId, score, total, avg, std, fairness });
   }
 
-  // Phase 3: Phase2候補の組み合わせで「全ペアの中間」にある駅に絞る
-  //   全メンバーから到達可能 かつ ≥50% のペアで経路上 → 候補確定
-  const minPairs = Math.max(1, Math.round(totalPairs * MIN_PAIR_RATIO));
-  const reachableFromAll = (st: string) =>
-    memberIds.every((_, m) => isFinite(dijks[m].dist.get(st) ?? Infinity));
+  scored.sort((a, b) => a.score - b.score);
 
-  let candidates = [...pairCount.entries()]
-    .filter(([st, cnt]) => cnt >= minPairs && reachableFromAll(st))
-    .map(([st]) => st);
-
-  // フォールバック: 条件が厳しすぎる場合は1ペア以上まで緩和
-  if (candidates.length < 5) {
-    candidates = [...pairCount.keys()].filter(reachableFromAll);
-  }
-
-  // スコアリング（precompute済みのdist[][]を利用）
+  // Phase 3: top3のみ経路復元（path・乗り換え回数の計算）
   const results: SearchResult[] = [];
 
-  for (const candId of candidates) {
+  for (const { candId, total, avg, std, fairness } of scored.slice(0, 3)) {
     const routes = memberIds.map((memberId, m) => ({
       memberId,
       route: reconstructRoute(candId, dijks[m]),
@@ -186,12 +168,6 @@ export function smartSearch(
     if (routes.some(r => !r.route)) continue;
 
     const validRoutes = routes as { memberId: string; route: Route }[];
-    const times = validRoutes.map(r => r.route.minutes);
-    const total = times.reduce((a, b) => a + b, 0);
-    const avg = total / times.length;
-    const variance = times.reduce((s, t) => s + (t - avg) ** 2, 0) / times.length;
-    const std = Math.sqrt(variance);
-    const fairness = Math.max(0, Math.min(100, Math.round(100 - std * 5)));
     const totalFare = validRoutes.reduce((s, r) => s + r.route.fare, 0);
     const maxTransfers = Math.max(...validRoutes.map(r => r.route.transfers));
 
@@ -204,9 +180,5 @@ export function smartSearch(
     });
   }
 
-  results.sort((a, b) =>
-    (a.total + (100 - a.fairness) * 0.5) - (b.total + (100 - b.fairness) * 0.5)
-  );
-
-  return results.slice(0, 3);
+  return results;
 }
