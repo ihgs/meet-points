@@ -139,10 +139,12 @@ export function smartSearch(
 
   // Phase 2: 全メンバーから到達可能な駅を対象に、precompute済みdistでスコアリング
   // 各駅のスコア計算は Map.get() + 四則演算のみ → O(N × |到達可能駅|)
+  const memberSet = new Set(memberIds);
   type Scored = { candId: string; score: number; total: number; avg: number; std: number; fairness: number };
   const scored: Scored[] = [];
 
   for (const [candId] of dijks[0].dist) {
+    if (memberSet.has(candId)) continue; // メンバー自身の駅は候補から除外
     const times = memberIds.map((_, m) => dijks[m].dist.get(candId) ?? Infinity);
     if (times.some(t => !isFinite(t))) continue; // いずれかのメンバーから到達不可
 
@@ -157,10 +159,10 @@ export function smartSearch(
 
   scored.sort((a, b) => a.score - b.score);
 
-  // Phase 3: top3のみ経路復元（path・乗り換え回数の計算）
+  // Phase 3: top8のみ経路復元（path・乗り換え回数の計算）
   const results: SearchResult[] = [];
 
-  for (const { candId, total, avg, std, fairness } of scored.slice(0, 3)) {
+  for (const { candId, total, avg, std, fairness } of scored.slice(0, 8)) {
     const routes = memberIds.map((memberId, m) => ({
       memberId,
       route: reconstructRoute(candId, dijks[m]),
