@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import type { Member, Candidate, SearchResult } from '@/lib/stations';
-import { searchMeetingPoints } from '@/lib/stations';
+import type { Member, Candidate, SearchResult, Station } from '@/lib/stations';
+import { getStationsAction, searchAction } from '@/app/actions';
 import { MemberList } from './MemberList';
 import { CandidateList } from './CandidateList';
 import { ResultCardCompact } from './ResultCardCompact';
@@ -18,6 +18,7 @@ type MeetPointViewProps = {
 };
 
 export function MeetPointView({ initialMembers, initialCandidates }: MeetPointViewProps) {
+  const [stations, setStations] = useState<Station[]>([]);
   const [members, setMembers] = useState<Member[]>(initialMembers ?? [
     { id: 'm1', stationId: 'shinjuku' },
     { id: 'm2', stationId: 'yokohama' },
@@ -29,22 +30,27 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
   const [sort, setSort] = useState<SortKey>('balanced');
   const [cardStyle, setCardStyle] = useState<CardStyle>('compact');
 
+  useEffect(() => {
+    getStationsAction().then(setStations);
+  }, []);
+
   const validMembers = members.filter(m => m.stationId);
   const canSearch = validMembers.length >= 2;
 
-  const runSearch = () => {
+  const runSearch = async () => {
     if (!canSearch) return;
     setLoading(true);
-    setTimeout(() => {
+    try {
       const memIds = validMembers.map(m => m.stationId!);
       const candIds = candidates.filter(c => c.stationId).map(c => c.stationId!);
-      let r = searchMeetingPoints(memIds, candIds);
+      let r = await searchAction(memIds, candIds);
       if (candIds.length === 0) {
         r = r.filter(x => !memIds.includes(x.candId)).slice(0, 8);
       }
       setResults(r);
+    } finally {
       setLoading(false);
-    }, 450);
+    }
   };
 
   useEffect(() => { runSearch(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -89,7 +95,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
           <span className="brand-sub">— 待ち合わせ駅検索</span>
         </div>
         <div className="head-right">
-          <span>東京近郊 30駅対応</span>
+          <span>{stations.length > 0 ? `${stations.length}駅対応` : '東京近郊 30駅対応'}</span>
           <kbd>v0.1</kbd>
         </div>
       </header>
@@ -98,12 +104,14 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
         <aside className="pane-left">
           <MemberList
             members={members}
+            stations={stations}
             onUpdate={updateMember}
             onRemove={removeMember}
             onAdd={addMember}
           />
           <CandidateList
             candidates={candidates}
+            stations={stations}
             onUpdate={updateCandidate}
             onRemove={removeCandidate}
             onAdd={addCandidate}

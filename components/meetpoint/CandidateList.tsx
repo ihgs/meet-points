@@ -1,14 +1,15 @@
-import type { Candidate } from '@/lib/stations';
+import type { Candidate, Station } from '@/lib/stations';
 import { StationInput } from './StationInput';
 
 type CandidateListProps = {
   candidates: Candidate[];
+  stations: Station[];
   onUpdate: (index: number, stationId: string | null) => void;
   onRemove: (index: number) => void;
   onAdd: () => void;
 };
 
-export function CandidateList({ candidates, onUpdate, onRemove, onAdd }: CandidateListProps) {
+export function CandidateList({ candidates, stations, onUpdate, onRemove, onAdd }: CandidateListProps) {
   return (
     <div className="block">
       <div className="block-head">
@@ -23,6 +24,7 @@ export function CandidateList({ candidates, onUpdate, onRemove, onAdd }: Candida
               <div className="member-tag muted-tag">候補{i + 1}</div>
               <StationInput
                 value={c.stationId}
+                stations={stations}
                 onChange={(id) => onUpdate(i, id)}
                 placeholder="候補にしたい駅名"
                 removable

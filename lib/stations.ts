@@ -41,7 +41,7 @@ export type Candidate = {
   stationId: string | null;
 };
 
-export const STATIONS: Station[] = [
+export const FALLBACK_STATIONS: Station[] = [
   { id: 'shinjuku',   name: '新宿',       yomi: 'しんじゅく',          lines: ['JR山手線','JR中央線','小田急','京王','丸ノ内線','大江戸線'] },
   { id: 'shibuya',    name: '渋谷',       yomi: 'しぶや',              lines: ['JR山手線','東急東横線','田園都市線','銀座線','半蔵門線','副都心線'] },
   { id: 'tokyo',      name: '東京',       yomi: 'とうきょう',          lines: ['JR山手線','JR東海道線','JR中央線','丸ノ内線'] },
@@ -73,6 +73,9 @@ export const STATIONS: Station[] = [
   { id: 'chiba',      name: '千葉',       yomi: 'ちば',                lines: ['JR総武線','京成千葉線'] },
   { id: 'ofuna',      name: '大船',       yomi: 'おおふな',            lines: ['JR東海道線','JR横須賀線'] },
 ];
+
+// Keep STATIONS as an alias so Storybook/test imports don't break until migrated
+export const STATIONS = FALLBACK_STATIONS;
 
 export const STATION_TAGS: Record<string, string[]> = {
   shinjuku:   ['居酒屋多数','カフェ','映画館','ターミナル','商業施設'],
@@ -174,9 +177,10 @@ function buildGraph(): Record<string, GraphNode[]> {
   return graph;
 }
 
-const GRAPH = buildGraph();
+const FALLBACK_GRAPH = buildGraph();
 
-export function findRoute(fromId: string, toId: string): Route | null {
+export function findRoute(fromId: string, toId: string, graph?: Record<string, GraphNode[]>): Route | null {
+  const g = graph ?? FALLBACK_GRAPH;
   if (fromId === toId) return { minutes: 0, transfers: 0, fare: 0, path: [fromId], lines: [] };
 
   type QueueItem = { id: string; line: string | null; time: number; transfers: number; path: string[]; lines: string[] };
@@ -200,7 +204,7 @@ export function findRoute(fromId: string, toId: string): Route | null {
     if (best[key] !== undefined && best[key] <= cur.time) continue;
     best[key] = cur.time;
 
-    for (const e of (GRAPH[cur.id] || [])) {
+    for (const e of (g[cur.id] || [])) {
       const transferPenalty = (cur.line && cur.line !== e.line) ? 5 : 0;
       const t = cur.time + e.m + transferPenalty;
       const tr = cur.transfers + (cur.line && cur.line !== e.line ? 1 : 0);
@@ -212,8 +216,9 @@ export function findRoute(fromId: string, toId: string): Route | null {
   return { minutes: result.time, transfers: result.transfers, fare: estimateFare(result.time), path: result.path, lines: result.lines };
 }
 
-export function searchMeetingPoints(memberStations: string[], candidateIds: string[]): SearchResult[] {
-  const candidates = candidateIds.length > 0 ? candidateIds : STATIONS.map(s => s.id);
+export function searchMeetingPoints(memberStations: string[], candidateIds: string[], stations?: Station[]): SearchResult[] {
+  const stationList = stations ?? FALLBACK_STATIONS;
+  const candidates = candidateIds.length > 0 ? candidateIds : stationList.map(s => s.id);
   const results: SearchResult[] = [];
 
   for (const candId of candidates) {
@@ -231,7 +236,7 @@ export function searchMeetingPoints(memberStations: string[], candidateIds: stri
     const maxTransfers = Math.max(...validRoutes.map(r => r.route.transfers));
 
     results.push({
-      candId, candName: STATIONS.find(s => s.id === candId)?.name ?? candId,
+      candId, candName: stationList.find(s => s.id === candId)?.name ?? candId,
       routes: validRoutes, total, avg, std, fairness, totalFare, maxTransfers,
       tags: STATION_TAGS[candId] ?? [],
     });
@@ -246,6 +251,6 @@ export function searchMeetingPoints(memberStations: string[], candidateIds: stri
   return results;
 }
 
-export function getStationById(id: string): Station | undefined {
-  return STATIONS.find(s => s.id === id);
+export function getStationById(id: string, stations?: Station[]): Station | undefined {
+  return (stations ?? FALLBACK_STATIONS).find(s => s.id === id);
 }

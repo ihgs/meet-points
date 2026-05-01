@@ -1,0 +1,23 @@
+name: GTFS定期更新
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # 毎週月曜 2:00 UTC
+  workflow_dispatch:      # 手動実行も可
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install
+      - run: npx tsx scripts/fetch-gtfs.ts --all
+        env:
+          ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gtfs-db
+          path: data/gtfs.db

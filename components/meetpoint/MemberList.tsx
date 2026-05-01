@@ -1,14 +1,15 @@
-import type { Member } from '@/lib/stations';
+import type { Member, Station } from '@/lib/stations';
 import { StationInput } from './StationInput';
 
 type MemberListProps = {
   members: Member[];
+  stations: Station[];
   onUpdate: (index: number, stationId: string | null) => void;
   onRemove: (index: number) => void;
   onAdd: () => void;
 };
 
-export function MemberList({ members, onUpdate, onRemove, onAdd }: MemberListProps) {
+export function MemberList({ members, stations, onUpdate, onRemove, onAdd }: MemberListProps) {
   return (
     <div className="block">
       <div className="block-head">
@@ -21,6 +22,7 @@ export function MemberList({ members, onUpdate, onRemove, onAdd }: MemberListPro
             <div className="member-tag">{i + 1}人目</div>
             <StationInput
               value={m.stationId}
+              stations={stations}
               onChange={(id) => onUpdate(i, id)}
               placeholder="駅名を入力（例: 新宿）"
               removable={members.length > 2}

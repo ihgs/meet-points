@@ -1,18 +1,21 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { STATIONS, getStationById } from '@/lib/stations';
+import type { Station } from '@/lib/stations';
+import { FALLBACK_STATIONS } from '@/lib/stations';
 
 type StationInputProps = {
   value: string | null;
   onChange: (id: string | null) => void;
+  stations?: Station[];
   placeholder?: string;
   autoFocus?: boolean;
   removable?: boolean;
   onRemove?: () => void;
 };
 
-export function StationInput({ value, onChange, placeholder, autoFocus, removable, onRemove }: StationInputProps) {
+export function StationInput({ value, onChange, stations, placeholder, autoFocus, removable, onRemove }: StationInputProps) {
+  const stationList = stations && stations.length > 0 ? stations : FALLBACK_STATIONS;
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [highlight, setHighlight] = useState(0);
@@ -20,12 +23,12 @@ export function StationInput({ value, onChange, placeholder, autoFocus, removabl
 
   useEffect(() => {
     if (value) {
-      const s = getStationById(value);
+      const s = stationList.find(st => st.id === value);
       setQuery(s ? s.name : '');
     } else {
       setQuery('');
     }
-  }, [value]);
+  }, [value, stationList]);
 
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
@@ -38,10 +41,10 @@ export function StationInput({ value, onChange, placeholder, autoFocus, removabl
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
-    return STATIONS.filter(
+    return stationList.filter(
       s => s.name.toLowerCase().includes(q) || s.yomi.toLowerCase().includes(q) || s.id.includes(q)
     ).slice(0, 7);
-  }, [query]);
+  }, [query, stationList]);
 
   const pick = (id: string, name: string) => {
     onChange(id);

@@ -44,3 +44,6 @@ next-env.d.ts
 storybook-static
 
 .claude/skills/*-workspace/
+
+# GTFS database
+data/*.db
