@@ -39,7 +39,7 @@ export default function RootLayout({
         ["--font-num" as string]: `var(--font-jetbrains-mono), ui-monospace, monospace`,
       }}
     >
-      <body>{children}</body>
+      <body className="bg-bg text-fg font-jp text-sm leading-normal antialiased [text-rendering:optimizeLegibility]">{children}</body>
     </html>
   );
 }

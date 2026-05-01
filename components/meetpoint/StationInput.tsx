@@ -53,9 +53,9 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
   };
 
   return (
-    <div className="station-input" ref={wrapRef}>
-      <div className="station-input-row">
-        <svg className="station-input-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <div className="relative" ref={wrapRef}>
+      <div className="flex items-center h-9 border border-line rounded-sm bg-bg-card transition-[border-color,box-shadow] focus-within:border-accent focus-within:shadow-[0_0_0_3px_var(--color-accent-soft)]">
+        <svg className="text-fg-3 ml-2.5 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="10" r="3" />
           <path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8z" />
         </svg>
@@ -63,6 +63,7 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
           autoFocus={autoFocus}
           value={query}
           placeholder={placeholder}
+          className="flex-1 min-w-0 border-0 outline-none bg-transparent px-2.5 h-full text-sm text-fg placeholder:text-[oklch(0.72_0.008_260)]"
           onChange={(e) => {
             setQuery(e.target.value);
             setOpen(true);
@@ -79,7 +80,11 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
           }}
         />
         {removable && (
-          <button className="station-input-x" onClick={onRemove} title="削除">
+          <button
+            className="size-7 mr-1 bg-transparent border-0 text-fg-3 cursor-pointer rounded grid place-items-center hover:bg-bg-soft hover:text-fg"
+            onClick={onRemove}
+            title="削除"
+          >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
@@ -87,17 +92,17 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
         )}
       </div>
       {open && matches.length > 0 && (
-        <ul className="station-suggest">
+        <ul className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 m-0 p-1 list-none bg-bg-card border border-line rounded shadow-[0_1px_0_rgba(20,20,30,.04),0_8px_24px_rgba(20,20,30,.06)] max-h-[280px] overflow-y-auto">
           {matches.map((s, i) => (
             <li
               key={s.id}
-              className={i === highlight ? 'on' : ''}
+              className={`px-2.5 py-2 rounded-sm cursor-pointer grid grid-cols-[auto_auto_1fr] gap-2 items-baseline ${i === highlight ? 'bg-bg-soft' : ''}`}
               onMouseEnter={() => setHighlight(i)}
               onMouseDown={(e) => { e.preventDefault(); pick(s.id, s.name); }}
             >
-              <span className="ss-name">{s.name}</span>
-              <span className="ss-yomi">{s.yomi}</span>
-              <span className="ss-lines">{s.lines.slice(0, 2).join(' / ')}</span>
+              <span className="font-medium">{s.name}</span>
+              <span className="text-[11px] text-fg-3">{s.yomi}</span>
+              <span className="text-[11px] text-fg-3 text-right overflow-hidden text-ellipsis whitespace-nowrap">{s.lines.slice(0, 2).join(' / ')}</span>
             </li>
           ))}
         </ul>

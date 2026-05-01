@@ -18,19 +18,19 @@ function condenseRoute(path: string[], lines: string[]): { station: string; line
 }
 
 export function RoutePath({ route }: { route: Route }) {
-  if (route.path.length === 0) return <span className="rr-same">同駅</span>;
+  if (route.path.length === 0) return <span className="text-fg-3 text-[11px]">同駅</span>;
 
   const stops = condenseRoute(route.path, route.lines);
 
   return (
-    <span className="route-path">
+    <span className="flex flex-wrap items-center gap-[3px] flex-1 min-w-0">
       {stops.map((stop, i) => (
-        <span key={i} className="route-segment">
-          <span className="route-station">{stop.station}</span>
+        <span key={i} className="flex items-center gap-[3px]">
+          <span className="font-bold text-fg text-xs whitespace-nowrap">{stop.station}</span>
           {stop.line && (
-            <span className="route-via">
-              <span className="route-line-name">({stop.line})</span>
-              <span className="route-arr">›</span>
+            <span className="flex items-center gap-[2px]">
+              <span className="text-accent-fg text-[10px] whitespace-nowrap">({stop.line})</span>
+              <span className="text-fg-3 text-[11px]">›</span>
             </span>
           )}
         </span>
