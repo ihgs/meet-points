@@ -403,7 +403,16 @@ input { font-family: inherit; }
 .rr-arrow { color: var(--fg-3); }
 .rr-lines { color: var(--accent-fg); font-size: 11px; }
 .rr-to { font-weight: 500; color: var(--fg); }
-.rr-meta { color: var(--fg-3); font-family: var(--font-num); font-size: 11px; margin-left: auto; }
+.rr-meta { color: var(--fg-3); font-family: var(--font-num); font-size: 11px; margin-left: auto; white-space: nowrap; }
+.rr-same { color: var(--fg-3); font-size: 11px; }
+
+/* 経路パス表示 */
+.route-path { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; flex: 1; min-width: 0; }
+.route-segment { display: flex; align-items: center; gap: 3px; }
+.route-station { font-weight: 500; color: var(--fg); font-size: 12px; white-space: nowrap; }
+.route-via { display: flex; align-items: center; gap: 2px; }
+.route-line-name { color: var(--accent-fg); font-size: 10px; white-space: nowrap; }
+.route-arr { color: var(--fg-3); font-size: 11px; }
 
 /* tags */
 .r-tags { display: flex; flex-wrap: wrap; gap: 4px; }

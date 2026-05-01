@@ -1,5 +1,4 @@
-import type { SearchResult, Member } from '@/lib/stations';
-import { getStationById } from '@/lib/stations';
+import type { SearchResult, Member, Route } from '@/lib/stations';
 import { TimeBars } from './TimeBars';
 import { FairnessRing } from './FairnessRing';
 
@@ -9,6 +8,46 @@ type ResultCardDetailProps = {
   members: Member[];
   maxTime: number;
 };
+
+// path と lines から「乗換駅のみ残した凝縮経路」を生成
+function condenseRoute(path: string[], lines: string[]): { station: string; line?: string }[] {
+  if (path.length === 0) return [];
+  if (path.length === 1) return [{ station: path[0] }];
+
+  const stops: { station: string; line?: string }[] = [];
+  let i = 0;
+  while (i < path.length - 1) {
+    const line = lines[i];
+    let j = i + 1;
+    while (j < path.length - 1 && lines[j] === line) j++;
+    stops.push({ station: path[i], line });
+    i = j;
+  }
+  stops.push({ station: path[path.length - 1] });
+  return stops;
+}
+
+function RoutePath({ route }: { route: Route }) {
+  if (route.path.length === 0) return <span className="rr-same">同駅</span>;
+
+  const stops = condenseRoute(route.path, route.lines);
+
+  return (
+    <span className="route-path">
+      {stops.map((stop, i) => (
+        <span key={i} className="route-segment">
+          <span className="route-station">{stop.station}</span>
+          {stop.line && (
+            <span className="route-via">
+              <span className="route-line-name">{stop.line}</span>
+              <span className="route-arr">›</span>
+            </span>
+          )}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 export function ResultCardDetail({ result, rank, members, maxTime }: ResultCardDetailProps) {
   return (
@@ -51,19 +90,13 @@ export function ResultCardDetail({ result, rank, members, maxTime }: ResultCardD
       <div className="rd-section">
         <div className="rd-section-l">経路</div>
         <div className="r-routes">
-          {result.routes.map((r, i) => {
-            const member = members[i];
-            const from = member?.stationId ? getStationById(member.stationId)?.name : '?';
-            const lines = [...new Set(r.route.lines)].slice(0, 3).join(' → ');
-            return (
-              <div key={i} className="r-route-line">
-                <span className="rr-num">{i + 1}人目</span>
-                <span className="rr-from">{from}</span>
-                <span className="rr-lines">{lines || '同駅'}</span>
-                <span className="rr-meta">{r.route.minutes}分・¥{r.route.fare}・乗換{r.route.transfers}回</span>
-              </div>
-            );
-          })}
+          {result.routes.map((r, i) => (
+            <div key={i} className="r-route-line">
+              <span className="rr-num">{i + 1}人目</span>
+              <RoutePath route={r.route} />
+              <span className="rr-meta">{r.route.minutes}分・¥{r.route.fare}・乗換{r.route.transfers}回</span>
+            </div>
+          ))}
         </div>
       </div>
 
