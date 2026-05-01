@@ -1,4 +1,4 @@
-name: GTFS定期更新
+name: 駅データ定期更新
 on:
   schedule:
     - cron: '0 2 * * 1'  # 毎週月曜 2:00 UTC
@@ -14,10 +14,8 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install
-      - run: npx tsx scripts/fetch-gtfs.ts --all
-        env:
-          ODPT_API_KEY: ${{ secrets.ODPT_API_KEY }}
+      - run: npx tsx scripts/fetch-stations.ts
       - uses: actions/upload-artifact@v4
         with:
-          name: gtfs-db
+          name: stations-db
           path: data/gtfs.db

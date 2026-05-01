@@ -1,6 +1,21 @@
 import 'server-only';
 import { getDb } from './db';
-import type { ParsedStop, ParsedEdge } from './gtfs-parser';
+
+// Shared types used by data importers (HeartRails, etc.)
+export type ParsedStop = {
+  stop_id: string;
+  stop_name: string;
+  stop_lat: number;
+  stop_lon: number;
+  parent_station: string;
+};
+
+export type ParsedEdge = {
+  from_stop: string;
+  to_stop: string;
+  line_name: string;
+  minutes: number;
+};
 
 export function importToDb(
   stops: ParsedStop[],

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getGtfsSources } from '@/gtfs.config';
+import { fetchKantoStations } from '@/lib/heartrails';
+import { importToDb, logImportError } from '@/lib/gtfs-importer';
 
 export async function POST(req: NextRequest) {
   const auth = req.headers.get('authorization');
@@ -8,22 +9,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const sources = getGtfsSources();
-  const results: { name: string; stopCount?: number; edgeCount?: number; error?: string }[] = [];
-
-  for (const source of sources) {
-    try {
-      const { fetchAndParseGtfs } = await import('@/lib/gtfs-parser');
-      const { importToDb } = await import('@/lib/gtfs-importer');
-      const { stops, edges, stopLines } = await fetchAndParseGtfs(source.url, source.operator);
-      const { stopCount, edgeCount } = importToDb(stops, edges, stopLines, source.name, source.operator);
-      results.push({ name: source.name, stopCount, edgeCount });
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.error(`[cron] ${source.name} failed: ${msg}`);
-      results.push({ name: source.name, error: msg });
-    }
+  const messages: string[] = [];
+  try {
+    const { stops, edges, stopLines } = await fetchKantoStations((msg) => {
+      messages.push(msg);
+    });
+    const { stopCount, edgeCount } = importToDb(stops, edges, stopLines, 'heartrails', 'HeartRails');
+    return NextResponse.json({ ok: true, stopCount, edgeCount, log: messages.slice(-5) });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`[cron] heartrails failed: ${msg}`);
+    logImportError('heartrails', msg);
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
-
-  return NextResponse.json({ ok: true, results });
 }
