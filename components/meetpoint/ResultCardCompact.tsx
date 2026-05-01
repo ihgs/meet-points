@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import type { SearchResult, Member } from '@/lib/stations';
-import { getStationById } from '@/lib/stations';
 import { TimeBars } from './TimeBars';
+import { RoutePath } from './RoutePath';
 
 type ResultCardCompactProps = {
   result: SearchResult;
@@ -45,19 +45,13 @@ export function ResultCardCompact({ result, rank, members, maxTime, isFirst }: R
         <div className="r-detail">
           <TimeBars routes={result.routes} max={maxTime} />
           <div className="r-routes">
-            {result.routes.map((r, i) => {
-              const member = members[i];
-              const from = member?.stationId ? getStationById(member.stationId)?.name : '?';
-              return (
-                <div key={i} className="r-route-line">
-                  <span className="rr-num">{i + 1}人目</span>
-                  <span className="rr-from">{from}</span>
-                  <span className="rr-arrow">→</span>
-                  <span className="rr-to">{result.candName}</span>
-                  <span className="rr-meta">{r.route.minutes}分 ・ ¥{r.route.fare} ・ 乗換{r.route.transfers}回</span>
-                </div>
-              );
-            })}
+            {result.routes.map((r, i) => (
+              <div key={i} className="r-route-line">
+                <span className="rr-num">{i + 1}人目</span>
+                <RoutePath route={r.route} />
+                <span className="rr-meta">{r.route.minutes}分・¥{r.route.fare}・乗換{r.route.transfers}回</span>
+              </div>
+            ))}
           </div>
           {result.tags.length > 0 && (
             <div className="r-tags">

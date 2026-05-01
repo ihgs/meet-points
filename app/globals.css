@@ -409,7 +409,7 @@ input { font-family: inherit; }
 /* 経路パス表示 */
 .route-path { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; flex: 1; min-width: 0; }
 .route-segment { display: flex; align-items: center; gap: 3px; }
-.route-station { font-weight: 500; color: var(--fg); font-size: 12px; white-space: nowrap; }
+.route-station { font-weight: 700; color: var(--fg); font-size: 12px; white-space: nowrap; }
 .route-via { display: flex; align-items: center; gap: 2px; }
 .route-line-name { color: var(--accent-fg); font-size: 10px; white-space: nowrap; }
 .route-arr { color: var(--fg-3); font-size: 11px; }
