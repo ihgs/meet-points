@@ -74,7 +74,7 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
             if (!open) return;
             if (e.key === 'ArrowDown') { e.preventDefault(); setHighlight(h => Math.min(h + 1, matches.length - 1)); }
             else if (e.key === 'ArrowUp') { e.preventDefault(); setHighlight(h => Math.max(h - 1, 0)); }
-            else if (e.key === 'Enter' && matches[highlight]) { e.preventDefault(); pick(matches[highlight].id, matches[highlight].name); }
+            else if (e.key === 'Enter' && !e.nativeEvent.isComposing && matches[highlight]) { e.preventDefault(); pick(matches[highlight].id, matches[highlight].name); }
             else if (e.key === 'Escape') setOpen(false);
           }}
         />
