@@ -1,4 +1,3 @@
-import 'server-only';
 import type { ParsedStop, ParsedEdge } from './gtfs-importer';
 
 const BASE_URL = 'https://express.heartrails.com/api/json';

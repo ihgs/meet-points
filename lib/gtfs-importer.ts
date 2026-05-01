@@ -1,4 +1,3 @@
-import 'server-only';
 import { getDb } from './db';
 
 // Shared types used by data importers (HeartRails, etc.)
