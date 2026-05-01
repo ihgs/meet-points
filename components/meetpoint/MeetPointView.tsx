@@ -18,7 +18,7 @@ type MeetPointViewProps = {
 };
 
 const tabBtn = (active: boolean) =>
-  `bg-transparent border-0 px-2.5 py-[5px] text-xs rounded-[5px] cursor-pointer ${active ? 'bg-fg text-base' : 'text-fg-2'}`;
+  `bg-transparent border-0 px-2.5 py-[5px] text-xs rounded-[5px] cursor-pointer ${active ? 'bg-fg text-white' : 'text-fg-2'}`;
 
 export function MeetPointView({ initialMembers, initialCandidates }: MeetPointViewProps) {
   const [stations, setStations] = useState<Station[]>([]);
@@ -86,9 +86,9 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex items-center justify-between px-7 py-4 border-b border-line bg-base sticky top-0 z-10">
+      <header className="flex items-center justify-between px-7 py-4 border-b border-line bg-page sticky top-0 z-10">
         <div className="flex items-center gap-2.5 font-semibold text-base tracking-tight">
-          <div className="size-[26px] bg-fg rounded-[7px] grid place-items-center text-base">
+          <div className="size-[26px] bg-fg rounded-[7px] grid place-items-center text-white">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <circle cx="6" cy="12" r="2.2" /><circle cx="18" cy="12" r="2.2" />
               <path d="M8.2 12h7.6" />
@@ -104,7 +104,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
       </header>
 
       <div className="flex-1 grid grid-cols-[380px_1fr] max-[900px]:grid-cols-1 min-h-0">
-        <aside className="border-r border-line max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-b-line px-6 pt-[22px] pb-[100px] bg-base overflow-y-auto">
+        <aside className="border-r border-line max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-b-line px-6 pt-[22px] pb-[100px] bg-page overflow-y-auto">
           <MemberList
             members={members}
             stations={stations}
@@ -120,9 +120,9 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
             onAdd={addCandidate}
           />
 
-          <div className="sticky bottom-0 -mx-6 -mb-[100px] mt-[14px] px-6 pb-6 pt-[14px]" style={{ background: 'linear-gradient(to top, var(--color-base) 60%, transparent)' }}>
+          <div className="sticky bottom-0 -mx-6 -mb-[100px] mt-[14px] px-6 pb-6 pt-[14px]" style={{ background: 'linear-gradient(to top, var(--color-page) 60%, transparent)' }}>
             <button
-              className="w-full h-[42px] border-0 rounded-sm bg-fg text-base text-sm font-semibold cursor-pointer flex items-center justify-center gap-2 transition-opacity hover:opacity-90 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full h-[42px] border-0 rounded-sm bg-fg text-white text-sm font-semibold cursor-pointer flex items-center justify-center gap-2 transition-opacity hover:opacity-90 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
               disabled={!canSearch || loading}
               onClick={runSearch}
             >

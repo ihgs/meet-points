@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-base: oklch(0.985 0.003 90);
+  --color-page: oklch(0.985 0.003 90);
   --color-card: #ffffff;
   --color-soft: oklch(0.97 0.004 90);
   --color-fg: oklch(0.20 0.012 260);
