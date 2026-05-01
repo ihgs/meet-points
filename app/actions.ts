@@ -79,11 +79,19 @@ export async function searchAction(memberIds: string[], candidateIds: string[]):
     return searchMeetingPoints(memberIds, candidateIds);
   }
 
+  // 自動検索: スマート候補選定（全駅ブルートフォース不要）
+  if (candidateIds.length === 0) {
+    const { smartSearch } = await import('@/lib/smart-search');
+    const stations = await getStationsAction();
+    const stationNameMap = new Map(stations.map(s => [s.id, s.name]));
+    return smartSearch(memberIds, graph, stationNameMap, STATION_TAGS);
+  }
+
+  // 手動候補指定: 指定駅のみをブルートフォースで評価
   const stations = await getStationsAction();
-  const candidates = candidateIds.length > 0 ? candidateIds : stations.map(s => s.id);
   const results: SearchResult[] = [];
 
-  for (const candId of candidates) {
+  for (const candId of candidateIds) {
     const routes = memberIds.map(memberId => ({ memberId, route: findRoute(memberId, candId, graph) }));
     if (routes.some(r => !r.route)) continue;
 
