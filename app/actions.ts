@@ -115,8 +115,9 @@ export async function searchAction(memberIds: string[], candidateIds: string[]):
   }
 
   results.sort((a, b) => {
-    const sa = a.total + (100 - a.fairness) * 0.5;
-    const sb = b.total + (100 - b.fairness) * 0.5;
+    const n = memberIds.length;
+    const sa = Math.max(...a.routes.map(r => r.route.minutes)) * n + a.total * 0.3;
+    const sb = Math.max(...b.routes.map(r => r.route.minutes)) * n + b.total * 0.3;
     return sa - sb;
   });
 
