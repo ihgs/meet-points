@@ -202,6 +202,9 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
             </div>
           ) : (
             <div className="flex flex-col gap-2.5">
+              <p className="m-0 text-[11px] text-fg-3 leading-relaxed">
+                ※ 時間と金額は正確な値ではなく、乗換ごとに+5分のペナルティを加えた経路探索による所要時間と、所要時間の区間から推定した運賃を元に算出した値です。
+              </p>
               {sorted.map((r, i) => {
                 const animStyle = { animationDelay: `${Math.min(i, 5) * 40}ms` };
                 if (cardStyle === 'detail') {
