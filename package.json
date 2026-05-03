@@ -11,8 +11,8 @@
     "build-storybook": "storybook build",
     "fetch-stations": "tsx scripts/fetch-stations.ts",
     "export-data": "tsx scripts/export-data.ts",
-    "build:gh-pages": "NEXT_PUBLIC_BASE_PATH=/meet-points next build && touch out/.nojekyll",
-    "deploy": "pnpm build:gh-pages && gh-pages -d out -t true -b gh-pages"
+    "build:gh-pages": "NEXT_PUBLIC_BASE_PATH=/meet-points next build",
+    "deploy:gh-pages": "pnpm build:gh-pages && gh-pages -d out -b gh-pages --nojekyll -t"
   },
   "dependencies": {
     "next": "16.2.4",

@@ -49,17 +49,17 @@ pnpm build      # next build → out/ に静的サイトを生成
 ### GitHub Pages へデプロイ
 
 ```bash
-pnpm deploy     # build:gh-pages → gh-pages ブランチへ push
+pnpm deploy:gh-pages
 ```
 
-- `build:gh-pages` は `NEXT_PUBLIC_BASE_PATH=/meet-points` 付きでビルドし、`out/.nojekyll` を作成
-- `deploy` は `gh-pages` パッケージで `out/` を `gh-pages` ブランチに push
-- 初回のみ GitHub リポジトリの Settings → Pages で **Source: gh-pages branch / root** を選択
+- `build:gh-pages` は `NEXT_PUBLIC_BASE_PATH=/meet-points` 付きでビルド
+- `deploy:gh-pages` は `gh-pages` パッケージで `out/` を `gh-pages` ブランチに push（`--nojekyll` で `.nojekyll` 自動付与）
+- 初回のみ GitHub リポジトリの Settings → Pages で **Source: Deploy from a branch / gh-pages / (root)** を選択
 - 公開URL: `https://<user>.github.io/meet-points/`
 
 別リポジトリ名で動かす場合は `NEXT_PUBLIC_BASE_PATH` を上書き:
 ```bash
-NEXT_PUBLIC_BASE_PATH=/other-name pnpm deploy
+NEXT_PUBLIC_BASE_PATH=/other-name pnpm deploy:gh-pages
 ```
 
 ## 開発
