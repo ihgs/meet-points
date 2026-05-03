@@ -1,0 +1,33 @@
+name: 駅データ定期更新
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # 毎週月曜 2:00 UTC
+  workflow_dispatch:      # 手動実行も可
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install
+      - name: 駅データ取得
+        run: pnpm fetch-stations
+      - name: JSONバンドル書き出し
+        run: pnpm export-data
+      - name: 変更があればコミット
+        run: |
+          if [[ -n "$(git status --porcelain public/data)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/data
+            git commit -m "駅データ自動更新 ($(date -u +%Y-%m-%d))"
+            git push
+          else
+            echo "変更なし"
+          fi

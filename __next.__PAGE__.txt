@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[87835,["/meet-points/_next/static/chunks/01qk2~bgf76vu.js","/meet-points/_next/static/chunks/0fw0wneotq-im.js"],"MeetPointView"]
+3:I[90774,["/meet-points/_next/static/chunks/01qk2~bgf76vu.js"],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{}],[["$","script","script-0",{"src":"/meet-points/_next/static/chunks/0fw0wneotq-im.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"-rampV_LtP_V8Lx068BwU"}
+5:null
