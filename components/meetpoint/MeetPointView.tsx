@@ -99,7 +99,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
         </div>
         <div className="flex items-center gap-3.5 text-fg-3 text-xs">
           <span>{stations.length > 0 ? `${stations.length}駅対応` : '東京近郊 30駅対応'}</span>
-          <kbd className="font-num text-[11px] px-1.5 py-0.5 border border-line rounded-sm bg-soft">v0.1</kbd>
+          <kbd className="font-num text-[11px] px-1.5 py-0.5 border border-line rounded-sm bg-soft">v0.2</kbd>
         </div>
       </header>
 
