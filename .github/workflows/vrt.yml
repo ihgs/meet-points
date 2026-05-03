@@ -46,12 +46,13 @@ jobs:
       - name: baseline をコミット
         if: github.event_name == 'workflow_dispatch' && inputs.update_baseline == 'true'
         run: |
-          if [[ -n "$(git status --porcelain '**/__screenshots__')" ]]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add '**/__screenshots__'
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # `**` は git pathspec デフォルトで効かないので glob magic で再帰マッチさせる
+          git add ':(glob)**/__screenshots__/**'
+          if git diff --cached --quiet; then
+            echo "baseline に変更なし"
+          else
             git commit -m "VRT baseline 再生成 ($(date -u +%Y-%m-%d))"
             git push
-          else
-            echo "baseline に変更なし"
           fi
