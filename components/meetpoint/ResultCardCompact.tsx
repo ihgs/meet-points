@@ -28,7 +28,7 @@ export function ResultCardCompact({ result, rank, maxTime, isFirst, style }: Res
           {rank}
         </div>
         <div>
-          <div className="text-base font-semibold tracking-tight">
+          <div className="text-base text-fg font-semibold tracking-tight">
             {result.candName}<span className="text-fg-3 font-normal text-[13px] ml-px">駅</span>
           </div>
           <div className="text-xs text-fg-3 mt-px">合計 {result.total}分 ・ 平均 {Math.round(result.avg)}分</div>

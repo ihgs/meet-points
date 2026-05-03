@@ -87,7 +87,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
   return (
     <div className="min-h-screen flex flex-col">
       <header className="flex items-center justify-between px-7 py-4 border-b border-line bg-page sticky top-0 z-10">
-        <div className="flex items-center gap-2.5 font-semibold text-base tracking-tight">
+        <div className="flex items-center gap-2.5 font-semibold text-base text-fg tracking-tight">
           <div className="size-[26px] bg-fg rounded-[7px] grid place-items-center text-white">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <circle cx="6" cy="12" r="2.2" /><circle cx="18" cy="12" r="2.2" />
