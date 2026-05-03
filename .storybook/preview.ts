@@ -17,6 +17,12 @@ const preview: Preview = {
       test: 'todo'
     }
   },
+  afterEach: async ({ canvasElement, tags }) => {
+    if (!tags?.includes('vrt')) return;
+    if (!(globalThis as { __vitest_browser__?: boolean }).__vitest_browser__) return;
+    const { expect } = await import('vitest');
+    await expect.element(canvasElement).toMatchScreenshot();
+  },
 };
 
 export default preview;
