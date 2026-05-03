@@ -20,6 +20,8 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
   const [open, setOpen] = useState(false);
   const [highlight, setHighlight] = useState(0);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const composingRef = useRef(false);
+  const justComposedRef = useRef(false);
 
   useEffect(() => {
     if (value) {
@@ -71,11 +73,20 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
             if (!e.target.value) onChange(null);
           }}
           onFocus={() => setOpen(true)}
+          onCompositionStart={() => { composingRef.current = true; }}
+          onCompositionEnd={() => {
+            composingRef.current = false;
+            justComposedRef.current = true;
+            setTimeout(() => { justComposedRef.current = false; }, 0);
+          }}
           onKeyDown={(e) => {
             if (!open) return;
             if (e.key === 'ArrowDown') { e.preventDefault(); setHighlight(h => Math.min(h + 1, matches.length - 1)); }
             else if (e.key === 'ArrowUp') { e.preventDefault(); setHighlight(h => Math.max(h - 1, 0)); }
-            else if (e.key === 'Enter' && !e.nativeEvent.isComposing && matches[highlight]) { e.preventDefault(); pick(matches[highlight].id, matches[highlight].name); }
+            else if (e.key === 'Enter') {
+              if (composingRef.current || justComposedRef.current || e.nativeEvent.isComposing || e.keyCode === 229) return;
+              if (matches[highlight]) { e.preventDefault(); pick(matches[highlight].id, matches[highlight].name); }
+            }
             else if (e.key === 'Escape') setOpen(false);
           }}
         />
