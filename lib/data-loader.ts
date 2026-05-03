@@ -9,6 +9,8 @@ export type DataBundle = {
 
 type EdgeTuple = [string, string, string, number];
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
 let _cache: Promise<DataBundle | null> | null = null;
 
 export function loadData(): Promise<DataBundle | null> {
@@ -16,8 +18,8 @@ export function loadData(): Promise<DataBundle | null> {
   _cache = (async () => {
     try {
       const [stationsRes, edgesRes] = await Promise.all([
-        fetch('/data/stations.json'),
-        fetch('/data/edges.json'),
+        fetch(`${BASE_PATH}/data/stations.json`),
+        fetch(`${BASE_PATH}/data/edges.json`),
       ]);
       if (!stationsRes.ok || !edgesRes.ok) return null;
 

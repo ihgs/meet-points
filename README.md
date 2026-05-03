@@ -46,6 +46,22 @@ pnpm build      # next build → out/ に静的サイトを生成
 
 `out/` を任意の静的ホスティング（GitHub Pages、Cloudflare Pages、S3、Vercel など）にデプロイ可能。
 
+### GitHub Pages へデプロイ
+
+```bash
+pnpm deploy     # build:gh-pages → gh-pages ブランチへ push
+```
+
+- `build:gh-pages` は `NEXT_PUBLIC_BASE_PATH=/meet-points` 付きでビルドし、`out/.nojekyll` を作成
+- `deploy` は `gh-pages` パッケージで `out/` を `gh-pages` ブランチに push
+- 初回のみ GitHub リポジトリの Settings → Pages で **Source: gh-pages branch / root** を選択
+- 公開URL: `https://<user>.github.io/meet-points/`
+
+別リポジトリ名で動かす場合は `NEXT_PUBLIC_BASE_PATH` を上書き:
+```bash
+NEXT_PUBLIC_BASE_PATH=/other-name pnpm deploy
+```
+
 ## 開発
 
 ```bash

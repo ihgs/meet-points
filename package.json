@@ -10,7 +10,9 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "fetch-stations": "tsx scripts/fetch-stations.ts",
-    "export-data": "tsx scripts/export-data.ts"
+    "export-data": "tsx scripts/export-data.ts",
+    "build:gh-pages": "NEXT_PUBLIC_BASE_PATH=/meet-points next build && touch out/.nojekyll",
+    "deploy": "pnpm build:gh-pages && gh-pages -d out -t true -b gh-pages"
   },
   "dependencies": {
     "next": "16.2.4",
@@ -37,6 +39,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "eslint-plugin-storybook": "^10.3.6",
+    "gh-pages": "^6.3.0",
     "playwright": "^1.59.1",
     "storybook": "^10.3.6",
     "tailwindcss": "^4.2.4",
