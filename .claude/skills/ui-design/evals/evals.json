@@ -1,0 +1,46 @@
+{
+  "skill_name": "ui-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "待ち合わせ場所のリストを表示するページを作りたい。各アイテムには場所名、住所、距離（km）、写真URLを表示する。ローディング状態と空の状態も対応したい。StorybookのStoriesも作成してください。",
+      "expected_output": "MeetPointListViewコンポーネント（View層）とMeetPointList.stories.tsxが作成される。コンポーネントはpropsでデータを受け取り、ストーリーはargsでモックデータを定義する。",
+      "files": [],
+      "expectations": [
+        "Viewコンポーネントが components/ ディレクトリに作成される",
+        "コンポーネントはデータをpropsで受け取る（ハードコードしない）",
+        "stories/ ディレクトリにストーリーファイルが作成される",
+        "ストーリーのargsにモックデータが定義されている",
+        "Default, Loading, Empty の少なくとも3つのStoryが定義されている",
+        "ViewコンポーネントにuseState/useEffect/fetchが含まれない"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "ユーザープロフィール画面のUIを作って。名前、アバター画像、自己紹介文、参加した待ち合わせ回数を表示する。編集ボタンも置いて。",
+      "expected_output": "UserProfileViewコンポーネントとUserProfile.stories.tsxが作成される。編集ボタンのonClickはpropsで受け取る。",
+      "files": [],
+      "expectations": [
+        "Viewコンポーネントが作成される",
+        "プロフィールデータがpropsの型として定義されている",
+        "onEditなどのコールバックがpropsで定義されている",
+        "ストーリーファイルが stories/ に作成される",
+        "ストーリーのargsに名前・アバター・自己紹介等のモックデータが含まれる",
+        "tags: ['autodocs'] がmetaに含まれる"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "待ち合わせ作成フォームのUIコンポーネントをStorybookで確認できるようにしてほしい。入力項目は場所名、日時、メモ。送信ボタンあり。バリデーションエラーの表示状態もStorybookで見たい。",
+      "expected_output": "MeetPointFormViewコンポーネントとMeetPointForm.stories.tsxが作成される。エラー状態もストーリーでカバーされる。",
+      "files": [],
+      "expectations": [
+        "フォームのViewコンポーネントが作成される",
+        "onSubmitやonChangeなどのハンドラがpropsで定義されている",
+        "バリデーションエラーの表示をpropsで制御できる",
+        "WithErrorなどのエラー状態のストーリーが存在する",
+        "ストーリーのargsにフォームの初期値やエラーメッセージが定義されている"
+      ]
+    }
+  ]
+}

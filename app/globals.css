@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-page: oklch(0.985 0.003 90);
+  --color-card: #ffffff;
+  --color-soft: oklch(0.97 0.004 90);
+  --color-fg: oklch(0.20 0.012 260);
+  --color-fg-2: oklch(0.42 0.012 260);
+  --color-fg-3: oklch(0.62 0.010 260);
+  --color-line: oklch(0.92 0.005 260);
+  --color-line-2: oklch(0.88 0.006 260);
+  --color-accent: oklch(0.50 0.16 265);
+  --color-accent-soft: oklch(0.95 0.04 265);
+  --color-accent-fg: oklch(0.42 0.18 265);
+  --color-ok: oklch(0.65 0.16 155);
+  --color-warn: oklch(0.75 0.15 75);
+  --color-bad: oklch(0.62 0.18 25);
+
+  --font-jp: 'Noto Sans JP', 'Inter Tight', system-ui, sans-serif;
+  --font-num: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+
+  --animate-card-in: cardIn 280ms ease-out both;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

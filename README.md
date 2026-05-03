@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MeetPoint — 待ち合わせ駅検索
 
-## Getting Started
+複数人の最寄駅から、所要時間・公平性スコアをもとに最適な待ち合わせ駅を探すアプリ。
 
-First, run the development server:
+完全クライアントサイドで動作する静的サイトです（API・サーバー不要）。
+
+## 機能
+
+- メンバー2〜10人の最寄駅を入力し、待ち合わせ候補駅をランキング表示
+- 候補駅の手動指定 or 全駅から自動探索
+- ソート: バランス / 時間 / 運賃 / 公平性
+- 結果カードスタイル: コンパクト / 詳細 / ランキング
+- [HeartRails Express API](https://express.heartrails.com/api.html) による関東近郊の駅データ
+
+## セットアップ
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000) で起動します。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> **Note:** `public/data/` に JSON データがない場合は東京近郊30駅のフォールバックデータで動作します。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 駅データの取得・更新
 
-## Learn More
+HeartRails Express API（認証不要・無料）から関東7都県の鉄道駅データを取得し、SQLite を経由して `public/data/*.json` に書き出します。
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm fetch-stations   # SQLite (data/gtfs.db) を生成
+pnpm export-data      # public/data/{stations,edges,meta}.json を書き出し
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+対象: 東京都・神奈川県・埼玉県・千葉県・茨城県・栃木県・群馬県の鉄道路線（バス・BRT・ケーブルカー等を除く）
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 定期更新
 
-## Deploy on Vercel
+GitHub Actions が毎週月曜 2:00 UTC に上記2コマンドを実行し、`public/data/` の差分を自動コミットします（外部APIキー不要）。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ビルド・デプロイ
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm build      # next build → out/ に静的サイトを生成
+```
+
+`out/` を任意の静的ホスティング（GitHub Pages、Cloudflare Pages、S3、Vercel など）にデプロイ可能。
+
+### GitHub Pages へデプロイ
+
+```bash
+pnpm deploy     # build:gh-pages → gh-pages ブランチへ push
+```
+
+- `build:gh-pages` は `NEXT_PUBLIC_BASE_PATH=/meet-points` 付きでビルドし、`out/.nojekyll` を作成
+- `deploy` は `gh-pages` パッケージで `out/` を `gh-pages` ブランチに push
+- 初回のみ GitHub リポジトリの Settings → Pages で **Source: gh-pages branch / root** を選択
+- 公開URL: `https://<user>.github.io/meet-points/`
+
+別リポジトリ名で動かす場合は `NEXT_PUBLIC_BASE_PATH` を上書き:
+```bash
+NEXT_PUBLIC_BASE_PATH=/other-name pnpm deploy
+```
+
+## 開発
+
+```bash
+pnpm dev          # 開発サーバー
+pnpm storybook    # Storybook（コンポーネント確認）
+pnpm tsc --noEmit # 型チェック
+```
+
+## プロジェクト構成
+
+```
+app/
+  page.tsx
+  layout.tsx
+components/meetpoint/  # UIコンポーネント（View層）
+lib/
+  search.ts            # クライアント側検索オーケストレーション
+  data-loader.ts       # JSON フェッチ + グラフ構築
+  smart-search.ts      # Dijkstra ベースの候補駅探索
+  stations.ts          # 型定義・フォールバックデータ・経路探索
+  heartrails.ts        # HeartRails Express APIクライアント（スクリプト用）
+  gtfs-importer.ts     # SQLite upsert（スクリプト用）
+  db.ts                # SQLite 接続（スクリプト用）
+public/data/
+  stations.json        # 駅一覧（クライアント fetch）
+  edges.json           # 路線エッジ（クライアント fetch）
+  meta.json            # 生成日時・件数
+scripts/
+  fetch-stations.ts    # 駅データ取得 → SQLite
+  export-data.ts       # SQLite → JSON 書き出し
+stories/               # Storybook ストーリー
+```
+
+## 技術スタック
+
+- [Next.js 16](https://nextjs.org/) (App Router, Static Export)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS v4](https://tailwindcss.com/)
+- [better-sqlite3](https://github.com/WiseLibs/better-sqlite3)（スクリプトのみ）
+- [Storybook 10](https://storybook.js.org/)
+- [HeartRails Express API](https://express.heartrails.com/api.html)
