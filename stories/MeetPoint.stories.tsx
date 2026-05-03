@@ -4,9 +4,14 @@ import { MeetPointView } from "@/components/meetpoint/MeetPointView";
 const meta: Meta<typeof MeetPointView> = {
   title: "MeetPoint/MeetPointView",
   component: MeetPointView,
-  tags: ["autodocs"],
+  tags: ["autodocs", "vrt"],
   parameters: {
     layout: "fullscreen",
+  },
+  play: async () => {
+    // VRT 実行時のみ、データ取得 + 検索完了を待ってからスクリーンショットを撮る
+    if (!(globalThis as { __vitest_browser__?: boolean }).__vitest_browser__) return;
+    await new Promise((r) => setTimeout(r, 1500));
   },
 };
 export default meta;
