@@ -18,7 +18,7 @@ type MeetPointViewProps = {
 };
 
 const tabBtn = (active: boolean) =>
-  `bg-transparent border-0 px-2.5 py-[5px] text-xs rounded-[5px] cursor-pointer ${active ? 'bg-fg text-white' : 'text-fg-2'}`;
+  `border-0 px-2.5 py-[5px] text-xs rounded-[5px] cursor-pointer ${active ? 'bg-fg-2 text-white' : 'bg-transparent text-fg-2'}`;
 
 export function MeetPointView({ initialMembers, initialCandidates }: MeetPointViewProps) {
   const [stations, setStations] = useState<Station[]>([]);
