@@ -32,7 +32,9 @@ export default defineConfig({
               toMatchScreenshot: {
                 comparatorName: 'pixelmatch',
                 comparatorOptions: {
-                  allowedMismatchedPixelRatio: 0.01,
+                  // 0.01 (1%) は 960x720 で約6900px までを許容するため、
+                  // 文字数文字の変更などを取りこぼす。0.001 (0.1% ≒ 700px) に厳しめ設定。
+                  allowedMismatchedPixelRatio: 0.001,
                 },
               },
             },
