@@ -8,11 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "fetch-stations": "tsx scripts/fetch-stations.ts",
+    "export-data": "tsx scripts/export-data.ts"
   },
   "dependencies": {
-    "adm-zip": "^0.5.17",
-    "better-sqlite3": "^12.9.0",
     "next": "16.2.4",
     "postcss": "^8.5.13",
     "react": "19.2.4",
@@ -32,6 +32,8 @@
     "@types/react-dom": "^19",
     "@vitest/browser-playwright": "^4.1.5",
     "@vitest/coverage-v8": "^4.1.5",
+    "adm-zip": "^0.5.17",
+    "better-sqlite3": "^12.9.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "eslint-plugin-storybook": "^10.3.6",

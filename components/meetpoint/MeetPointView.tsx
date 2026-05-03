@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import type { Member, Candidate, SearchResult, Station } from '@/lib/stations';
-import { getStationsAction, searchAction } from '@/app/actions';
+import { getStations, search } from '@/lib/search';
 import { MemberList } from './MemberList';
 import { CandidateList } from './CandidateList';
 import { ResultCardCompact } from './ResultCardCompact';
@@ -34,7 +34,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
   const [cardStyle, setCardStyle] = useState<CardStyle>('compact');
 
   useEffect(() => {
-    getStationsAction().then(setStations);
+    getStations().then(setStations);
   }, []);
 
   const validMembers = members.filter(m => m.stationId);
@@ -46,7 +46,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
     try {
       const memIds = validMembers.map(m => m.stationId!);
       const candIds = candidates.filter(c => c.stationId).map(c => c.stationId!);
-      let r = await searchAction(memIds, candIds);
+      let r = await search(memIds, candIds);
       if (candIds.length === 0) {
         r = r.filter(x => !memIds.includes(x.candId)).slice(0, 8);
       }
