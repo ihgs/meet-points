@@ -33,9 +33,10 @@ export default defineConfig({
                 comparatorName: 'pixelmatch',
                 comparatorOptions: {
                   // 比率指定だと 960x720 で 0.001 = 約700px と緩く、数文字の変更を取りこぼす。
-                  // 絶対値で 50px までのズレを許容する設定にして、数文字レベルの差分を検出可能にする。
-                  // ヘッドレス chromium 同士のレンダリング誤差は通常もっと小さい想定。
-                  allowedMismatchedPixels: 50,
+                  // 絶対値で 10px に絞り、1文字程度の差分（v0.1 → v0.2 の "1"→"2" ≒ 30px）も検出可能に。
+                  // ヘッドレス chromium 同士のレンダリング誤差は通常 0px 想定。
+                  // 偽陽性が頻発する場合は段階的に緩める方針。
+                  allowedMismatchedPixels: 10,
                 },
               },
             },
