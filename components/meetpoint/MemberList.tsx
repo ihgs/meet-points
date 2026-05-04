@@ -18,7 +18,7 @@ export function MemberList({ members, stations, onUpdate, onRemove, onAdd }: Mem
       </div>
       <div className="flex flex-col gap-2 mb-2">
         {members.map((m, i) => (
-          <div key={m.id} className="grid grid-cols-[56px_1fr] gap-2.5 items-start">
+          <div key={m.id} className="grid grid-cols-[56px_minmax(0,1fr)] gap-2.5 items-start">
             <div className="h-9 flex items-center justify-center bg-soft border border-line rounded-sm text-[11px] font-medium text-fg-2 whitespace-nowrap">
               {i + 1}人目
             </div>

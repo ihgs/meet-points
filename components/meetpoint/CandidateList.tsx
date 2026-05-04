@@ -20,7 +20,7 @@ export function CandidateList({ candidates, stations, onUpdate, onRemove, onAdd 
       {candidates.length > 0 && (
         <div className="flex flex-col gap-2 mb-2">
           {candidates.map((c, i) => (
-            <div key={c.id} className="grid grid-cols-[56px_1fr] gap-2.5 items-start">
+            <div key={c.id} className="grid grid-cols-[56px_minmax(0,1fr)] gap-2.5 items-start">
               <div className="h-9 flex items-center justify-center bg-transparent border border-line rounded-sm text-[11px] font-medium text-fg-3 whitespace-nowrap">
                 候補{i + 1}
               </div>
