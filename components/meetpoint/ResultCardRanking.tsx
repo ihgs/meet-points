@@ -1,5 +1,6 @@
 import type { SearchResult } from '@/lib/stations';
 import { MapDirectionLink } from './MapDirectionLink';
+import { StationSearchLink } from './StationSearchLink';
 
 type ResultCardRankingProps = {
   result: SearchResult;
@@ -27,8 +28,9 @@ export function ResultCardRanking({ result, rank, maxTime, isFirst, style }: Res
       </div>
       <div className="min-w-0">
         <div className="flex justify-between items-baseline gap-3 mb-2 flex-wrap">
-          <h4 className="m-0 text-lg font-semibold tracking-tight">
-            {result.candName}<span className="text-fg-3 font-normal text-[13px] ml-px">駅</span>
+          <h4 className="m-0 text-lg font-semibold tracking-tight inline-flex items-center gap-1.5">
+            <span>{result.candName}<span className="text-fg-3 font-normal text-[13px] ml-px">駅</span></span>
+            <StationSearchLink station={result.candName} />
           </h4>
           <div className="flex gap-1 flex-wrap">
             {result.tags.slice(0, 3).map(t => (
