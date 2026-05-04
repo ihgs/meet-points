@@ -202,7 +202,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
             </div>
           ) : (
             <div className="flex flex-col gap-2.5">
-              <p className="m-0 text-[11px] text-fg-3 leading-relaxed">
+              <p className="m-0 text-xs text-bad font-medium leading-relaxed">
                 ※ 時間と金額は正確な値ではなく、乗換ごとに+5分のペナルティを加えた経路探索による所要時間と、所要時間の区間から推定した運賃を元に算出した値です。
               </p>
               {sorted.map((r, i) => {

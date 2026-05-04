@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { SearchResult } from '@/lib/stations';
 import { TimeBars } from './TimeBars';
 import { RoutePath } from './RoutePath';
+import { MapDirectionLink } from './MapDirectionLink';
 
 type ResultCardCompactProps = {
   result: SearchResult;
@@ -63,6 +64,7 @@ export function ResultCardCompact({ result, rank, maxTime, isFirst, style }: Res
                 <span className="font-num text-[10px] bg-soft px-1.5 py-0.5 rounded-[3px] text-fg-3">{i + 1}人目</span>
                 <RoutePath route={r.route} />
                 <span className="text-fg-3 font-num text-[11px] ml-auto whitespace-nowrap">{r.route.minutes}分・¥{r.route.fare}・乗換{r.route.transfers}回</span>
+                <MapDirectionLink origin={r.route.path[0] ?? ''} destination={result.candName} />
               </div>
             ))}
           </div>
