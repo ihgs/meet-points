@@ -3,6 +3,7 @@ import { TimeBars } from './TimeBars';
 import { FairnessRing } from './FairnessRing';
 import { RoutePath } from './RoutePath';
 import { MapDirectionLink } from './MapDirectionLink';
+import { StationSearchLink } from './StationSearchLink';
 
 type ResultCardDetailProps = {
   result: SearchResult;
@@ -20,8 +21,9 @@ export function ResultCardDetail({ result, rank, maxTime, style }: ResultCardDet
       <div className="flex justify-between items-start mb-4">
         <div>
           <div className="text-[11px] text-fg-3 tracking-[0.06em] uppercase mb-0.5">第{rank}位</div>
-          <h4 className="m-0 text-[22px] font-semibold tracking-tight">
-            {result.candName}<span className="text-fg-3 font-normal text-[13px] ml-px">駅</span>
+          <h4 className="m-0 text-[22px] font-semibold tracking-tight inline-flex items-center gap-2">
+            <span>{result.candName}<span className="text-fg-3 font-normal text-[13px] ml-px">駅</span></span>
+            <StationSearchLink station={result.candName} size="md" />
           </h4>
         </div>
         <div className="flex flex-col items-center gap-0.5">

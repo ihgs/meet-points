@@ -5,6 +5,7 @@ import type { SearchResult } from '@/lib/stations';
 import { TimeBars } from './TimeBars';
 import { RoutePath } from './RoutePath';
 import { MapDirectionLink } from './MapDirectionLink';
+import { StationSearchLink } from './StationSearchLink';
 
 type ResultCardCompactProps = {
   result: SearchResult;
@@ -29,8 +30,9 @@ export function ResultCardCompact({ result, rank, maxTime, isFirst, style }: Res
           {rank}
         </div>
         <div>
-          <div className="text-base text-fg font-semibold tracking-tight">
-            {result.candName}<span className="text-fg-3 font-normal text-[13px] ml-px">駅</span>
+          <div className="text-base text-fg font-semibold tracking-tight inline-flex items-center gap-1.5">
+            <span>{result.candName}<span className="text-fg-3 font-normal text-[13px] ml-px">駅</span></span>
+            <StationSearchLink station={result.candName} />
           </div>
           <div className="text-xs text-fg-3 mt-px">合計 {result.total}分 ・ 平均 {Math.round(result.avg)}分</div>
         </div>
