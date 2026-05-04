@@ -23,6 +23,9 @@ export default defineConfig({
         ],
         test: {
           name: 'storybook',
+          // VRT の stable-screenshot ループ + 比較に余裕を持たせる
+          // （default 5000ms だと 1ストーリーあたり stability loop が間に合わずタイムアウトする）
+          testTimeout: 30_000,
           browser: {
             enabled: true,
             headless: true,
