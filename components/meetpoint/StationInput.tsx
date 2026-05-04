@@ -55,7 +55,7 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
   };
 
   return (
-    <div className="relative" ref={wrapRef}>
+    <div className="relative min-w-0" ref={wrapRef}>
       <div className="flex items-center h-9 border border-line rounded-sm bg-card transition-[border-color,box-shadow] focus-within:border-accent focus-within:shadow-[0_0_0_3px_var(--color-accent-soft)]">
         <svg className="text-fg-3 ml-2.5 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="10" r="3" />
