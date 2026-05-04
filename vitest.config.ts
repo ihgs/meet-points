@@ -32,13 +32,12 @@ export default defineConfig({
               toMatchScreenshot: {
                 comparatorName: 'pixelmatch',
                 comparatorOptions: {
-                  // 比率指定だと 960x720 で 0.001 = 約700px と緩く、数文字の変更を取りこぼす。
-                  // 絶対値 10px + per-pixel threshold を pixelmatch デフォルト 0.1 から 0.05 に絞り、
-                  // 数文字レベルの変更（v0.1 → v0.2 の "1"→"2" など）を確実に検出可能に。
+                  // 数文字レベルの変更（v0.1 → v0.2 の "1"→"2" など）も検出するため
+                  // 許容pixel数を 5 まで絞る。per-pixel threshold は default 0.1 を使う
+                  // （0.05 まで下げると stable-screenshot のループ安定判定でも flaky になり、
+                  // 同一バイトの screenshot ですらループが抜けず timeout する事象が発生した）。
                   // ヘッドレス chromium 同士のレンダリング誤差は通常 0px 想定。
-                  // 偽陽性が頻発する場合は段階的に緩める方針。
-                  allowedMismatchedPixels: 10,
-                  threshold: 0.05,
+                  allowedMismatchedPixels: 5,
                 },
               },
             },
