@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter_Tight, JetBrains_Mono, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -43,6 +44,7 @@ export default function RootLayout({
       <body className="bg-page text-fg font-jp text-sm leading-normal antialiased [text-rendering:optimizeLegibility] min-h-screen flex flex-col">
         {children}
         <Footer />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
       </body>
     </html>
   );

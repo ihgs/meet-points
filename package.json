@@ -19,6 +19,7 @@
     "deploy:gh-pages": "pnpm build:gh-pages && gh-pages -d out -b gh-pages --nojekyll -t"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.4",
     "next": "16.2.4",
     "postcss": "^8.5.13",
     "react": "19.2.4",
