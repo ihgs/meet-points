@@ -94,7 +94,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
               <path d="M8.2 12h7.6" />
             </svg>
           </div>
-          MeetPoint
+          MeetPoint!
           <span className="text-fg-3 font-normal text-xs ml-1">— 待ち合わせ駅検索</span>
         </div>
         <div className="flex items-center gap-3.5 text-fg-3 text-xs">
