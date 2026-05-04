@@ -47,7 +47,7 @@ export const WithManualCandidates: Story = {
     initialCandidates: [
       { id: "c1", stationId: "渋谷" },
       { id: "c2", stationId: "恵比寿" },
-      { id: "c3", stationId: "中目黒" },
+      { id: "c3", stationId: "日比谷" },
     ],
   },
 };
