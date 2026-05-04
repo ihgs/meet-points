@@ -36,13 +36,18 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: vrt-diff
+          # vitest は diff/actual を `.vitest-attachments/` 配下に書き出す
           path: |
-            **/__screenshots__/**/*-actual-*.png
-            **/__screenshots__/**/*-diff-*.png
-          if-no-files-found: ignore
+            .vitest-attachments/**/*-actual-*.png
+            .vitest-attachments/**/*-diff-*.png
+            .vitest-attachments/**/*-reference-*.png
+          if-no-files-found: warn
       - name: baseline 再生成
         if: github.event_name == 'workflow_dispatch' && inputs.update_baseline == 'true'
-        run: pnpm test:vrt:update
+        # 古い baseline（過去ランの非同期な更新で混在しうる）を一掃してから新規生成する
+        run: |
+          find . -path ./node_modules -prune -o -type d -name __screenshots__ -print -exec rm -rf {} +
+          pnpm test:vrt:update
       - name: baseline をコミット
         if: github.event_name == 'workflow_dispatch' && inputs.update_baseline == 'true'
         run: |
