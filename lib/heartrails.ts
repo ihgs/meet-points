@@ -6,8 +6,8 @@ const REQUEST_DELAY_MS = 150;
 // 対象都県（関東圏）
 const PREFECTURES = ['東京都', '神奈川県', '埼玉県', '千葉県', '茨城県', '栃木県', '群馬県'];
 
-// バス・非鉄道路線を除外するキーワード
-const SKIP_KEYWORDS = ['バス', 'BRT', 'コミュニティ', 'スクール', 'シャトル', 'ループ', 'ライナー（', 'ケーブル'];
+// バス・非鉄道路線・新幹線を除外するキーワード
+const SKIP_KEYWORDS = ['バス', 'BRT', 'コミュニティ', 'スクール', 'シャトル', 'ループ', 'ライナー（', 'ケーブル', '新幹線'];
 
 type HeartrailsStation = {
   name: string;
