@@ -32,9 +32,10 @@ export default defineConfig({
               toMatchScreenshot: {
                 comparatorName: 'pixelmatch',
                 comparatorOptions: {
-                  // 0.01 (1%) は 960x720 で約6900px までを許容するため、
-                  // 文字数文字の変更などを取りこぼす。0.001 (0.1% ≒ 700px) に厳しめ設定。
-                  allowedMismatchedPixelRatio: 0.001,
+                  // 比率指定だと 960x720 で 0.001 = 約700px と緩く、数文字の変更を取りこぼす。
+                  // 絶対値で 50px までのズレを許容する設定にして、数文字レベルの差分を検出可能にする。
+                  // ヘッドレス chromium 同士のレンダリング誤差は通常もっと小さい想定。
+                  allowedMismatchedPixels: 50,
                 },
               },
             },
