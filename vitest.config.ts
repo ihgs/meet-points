@@ -33,10 +33,12 @@ export default defineConfig({
                 comparatorName: 'pixelmatch',
                 comparatorOptions: {
                   // 比率指定だと 960x720 で 0.001 = 約700px と緩く、数文字の変更を取りこぼす。
-                  // 絶対値で 10px に絞り、1文字程度の差分（v0.1 → v0.2 の "1"→"2" ≒ 30px）も検出可能に。
+                  // 絶対値 10px + per-pixel threshold を pixelmatch デフォルト 0.1 から 0.05 に絞り、
+                  // 数文字レベルの変更（v0.1 → v0.2 の "1"→"2" など）を確実に検出可能に。
                   // ヘッドレス chromium 同士のレンダリング誤差は通常 0px 想定。
                   // 偽陽性が頻発する場合は段階的に緩める方針。
                   allowedMismatchedPixels: 10,
+                  threshold: 0.05,
                 },
               },
             },

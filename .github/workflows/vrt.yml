@@ -41,6 +41,9 @@ jobs:
             .vitest-attachments/**/*-actual-*.png
             .vitest-attachments/**/*-diff-*.png
             .vitest-attachments/**/*-reference-*.png
+          # `.vitest-attachments` は `.` 始まりの hidden ディレクトリのため、
+          # upload-artifact のデフォルトでは除外される。明示的に有効化する。
+          include-hidden-files: true
           if-no-files-found: warn
       - name: baseline 再生成
         if: github.event_name == 'workflow_dispatch' && inputs.update_baseline == 'true'
