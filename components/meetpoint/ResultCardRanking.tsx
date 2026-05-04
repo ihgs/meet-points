@@ -1,4 +1,5 @@
 import type { SearchResult } from '@/lib/stations';
+import { MapDirectionLink } from './MapDirectionLink';
 
 type ResultCardRankingProps = {
   result: SearchResult;
@@ -54,7 +55,7 @@ export function ResultCardRanking({ result, rank, maxTime, isFirst, style }: Res
           {result.routes.map((r, i) => {
             const w = (r.route.minutes / maxTime) * 100;
             return (
-              <div key={i} className="grid grid-cols-[1fr_24px] gap-2 items-center" title={`${i + 1}人目: ${r.route.minutes}分`}>
+              <div key={i} className="grid grid-cols-[1fr_24px_auto] gap-2 items-center" title={`${i + 1}人目: ${r.route.minutes}分`}>
                 <div
                   className="h-4 bg-accent-soft rounded-[3px] flex items-center justify-end px-1.5 font-num text-[10px] font-semibold text-accent-fg min-w-6 transition-[width]"
                   style={{ width: `${w}%` }}
@@ -62,6 +63,7 @@ export function ResultCardRanking({ result, rank, maxTime, isFirst, style }: Res
                   <span>{r.route.minutes}</span>
                 </div>
                 <span className="font-num text-[10px] text-fg-3">{i + 1}</span>
+                <MapDirectionLink origin={r.route.path[0] ?? ''} destination={result.candName} />
               </div>
             );
           })}
