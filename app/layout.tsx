@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter_Tight, JetBrains_Mono, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
+import { Footer } from "@/components/layout/Footer";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -21,7 +22,7 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "MeetPoint — 待ち合わせ駅検索",
+  title: "マンナカ — 待ち合わせ駅検索",
   description: "複数名の最寄駅から最適な待ち合わせ駅を探す",
 };
 
@@ -39,7 +40,10 @@ export default function RootLayout({
         ["--font-num" as string]: `var(--font-jetbrains-mono), ui-monospace, monospace`,
       }}
     >
-      <body className="bg-page text-fg font-jp text-sm leading-normal antialiased [text-rendering:optimizeLegibility]">{children}</body>
+      <body className="bg-page text-fg font-jp text-sm leading-normal antialiased [text-rendering:optimizeLegibility] min-h-screen flex flex-col">
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
