@@ -85,7 +85,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
     setCandidates(c => [...c, { id: crypto.randomUUID(), stationId: null }]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex-1 flex flex-col min-h-0">
       <header className="flex items-center justify-between px-7 py-4 border-b border-line bg-page sticky top-0 z-10">
         <div className="flex items-center gap-2.5 font-semibold text-base text-fg tracking-tight">
           <div className="size-[26px] bg-fg rounded-[7px] grid place-items-center text-white">
@@ -94,7 +94,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
               <path d="M8.2 12h7.6" />
             </svg>
           </div>
-          MeetPoint
+          マンナカ
           <span className="text-fg-3 font-normal text-xs ml-1">— 待ち合わせ駅検索</span>
         </div>
         <div className="flex items-center gap-3.5 text-fg-3 text-xs">

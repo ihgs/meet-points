@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { MeetPointView } from "@/components/meetpoint/MeetPointView";
 
 const meta: Meta<typeof MeetPointView> = {
-  title: "MeetPoint/MeetPointView",
+  title: "マンナカ/MeetPointView",
   component: MeetPointView,
   tags: ["autodocs", "vrt"],
   parameters: {
