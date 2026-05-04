@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[90774,["/meet-points/_next/static/chunks/01qk2~bgf76vu.js"],"ViewportBoundary"]
-3:I[90774,["/meet-points/_next/static/chunks/01qk2~bgf76vu.js"],"MetadataBoundary"]
+2:I[90774,["/meet-points/_next/static/chunks/0b3uypywts3x6.js"],"ViewportBoundary"]
+3:I[90774,["/meet-points/_next/static/chunks/0b3uypywts3x6.js"],"MetadataBoundary"]
 4:"$Sreact.suspense"
-5:I[46513,["/meet-points/_next/static/chunks/01qk2~bgf76vu.js"],"IconMark"]
-0:{"rsc":["$","$1","h",{"children":[null,["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"MeetPoint — 待ち合わせ駅検索"}],["$","meta","1",{"name":"description","content":"複数名の最寄駅から最適な待ち合わせ駅を探す"}],["$","link","2",{"rel":"icon","href":"/meet-points/favicon.ico?favicon.0x3dzn~oxb6tn.ico","sizes":"256x256","type":"image/x-icon"}],["$","$L5","3",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"nurzicqVfl5S6wO_EOv8H"}
+5:I[46513,["/meet-points/_next/static/chunks/0b3uypywts3x6.js"],"IconMark"]
+0:{"rsc":["$","$1","h",{"children":[null,["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"マンナカ — 待ち合わせ駅検索"}],["$","meta","1",{"name":"description","content":"複数名の最寄駅から最適な待ち合わせ駅を探す"}],["$","link","2",{"rel":"icon","href":"/meet-points/favicon.ico?favicon.0x3dzn~oxb6tn.ico","sizes":"256x256","type":"image/x-icon"}],["$","$L5","3",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"a1SFUf_bKGEbu7szwVelp"}
