@@ -37,7 +37,7 @@ export async function search(memberIds: string[], candidateIds: string[]): Promi
     const avg = total / times.length;
     const variance = times.reduce((s, t) => s + (t - avg) ** 2, 0) / times.length;
     const std = Math.sqrt(variance);
-    const fairness = Math.max(0, Math.min(100, Math.round(100 - std * 5)));
+    const fairness = avg + std === 0 ? 100 : Math.round(100 * (1 - std / (avg + std)));
     const totalFare = validRoutes.reduce((s, r) => s + r.route.fare, 0);
     const maxTransfers = Math.max(...validRoutes.map(r => r.route.transfers));
 

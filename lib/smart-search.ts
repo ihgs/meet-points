@@ -152,7 +152,7 @@ export function smartSearch(
     const avg = total / times.length;
     const variance = times.reduce((s, t) => s + (t - avg) ** 2, 0) / times.length;
     const std = Math.sqrt(variance);
-    const fairness = Math.max(0, Math.min(100, Math.round(100 - std * 5)));
+    const fairness = avg + std === 0 ? 100 : Math.round(100 * (1 - std / (avg + std)));
     const maxTime = Math.max(...times);
     const score = maxTime * memberIds.length + total * 0.3;
     scored.push({ candId, score, total, avg, std, fairness });
