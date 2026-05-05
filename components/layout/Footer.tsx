@@ -2,6 +2,9 @@ type FooterProps = {
   year?: number;
 };
 
+const policyLinkClass =
+  "text-fg-2 hover:text-accent-fg underline-offset-2 hover:underline transition-colors";
+
 export function Footer({ year = new Date().getFullYear() }: FooterProps) {
   return (
     <footer className="border-t border-line bg-page text-fg-3 text-[11px]">
@@ -11,11 +14,25 @@ export function Footer({ year = new Date().getFullYear() }: FooterProps) {
             href="https://express.heartrails.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-fg-2 hover:text-accent-fg underline-offset-2 hover:underline transition-colors"
+            className={policyLinkClass}
           >
             HeartRails Express
           </a>
         </span>
+        <nav
+          aria-label="サイトポリシー"
+          className="flex items-center gap-x-3 max-[640px]:mt-0.5"
+        >
+          <a href="/terms" className={policyLinkClass}>
+            利用規約
+          </a>
+          <span aria-hidden="true" className="text-fg-3">
+            ・
+          </span>
+          <a href="/privacy" className={policyLinkClass}>
+            プライバシーポリシー
+          </a>
+        </nav>
         <span className="ml-auto max-[640px]:ml-0 max-[640px]:mt-0.5">© {year} マンナカ</span>
       </div>
     </footer>
