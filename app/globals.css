@@ -30,3 +30,12 @@
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* iOS Safari の autozoom 対策: 16px 未満の入力欄にフォーカスすると
+   ブラウザがズームインしてレイアウトが崩れる。md (768px) 未満では
+   入力欄のフォントを 16px に揃える（PC 表示は既存の size を維持）。 */
+@media (max-width: 767px) {
+  input, textarea, select {
+    font-size: 16px;
+  }
+}
