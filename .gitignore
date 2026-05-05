@@ -52,4 +52,6 @@ data/*.db
 # (macOS/Windows local runs produce platform-suffixed PNGs that are throwaway)
 **/__screenshots__/darwin/
 **/__screenshots__/win32/
+**/__screenshots__/mobile/darwin/
+**/__screenshots__/mobile/win32/
 .vitest-attachments/

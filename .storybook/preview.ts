@@ -1,6 +1,15 @@
 import type { Preview } from '@storybook/nextjs-vite'
 import '../app/globals.css';
 
+// vitest.config.ts の define で literal 置換される VRT 用フラグ。
+// - storybook プロジェクト: false に置換
+// - storybook-mobile プロジェクト: true に置換
+// - storybook dev サーバー（define が効かない実行系）: 識別子未定義のままなので、
+//   typeof でガードしてから参照する。
+declare const __VRT_MOBILE__: boolean | undefined;
+const isMobileVrt =
+  typeof __VRT_MOBILE__ !== 'undefined' && __VRT_MOBILE__ === true;
+
 const preview: Preview = {
   parameters: {
     controls: {
@@ -15,7 +24,24 @@ const preview: Preview = {
       // 'error' - fail CI on a11y violations
       // 'off' - skip a11y checks entirely
       test: 'todo'
-    }
+    },
+
+    // storybook-mobile プロジェクトでは Storybook 標準の viewport パラメータで
+    // iPhone 14 相当 (390x844) をデフォルトに指定する。
+    // addon-vitest が play 直前に page.viewport(...) でこのサイズを iframe に適用するので、
+    // 各ストーリーはモバイル幅でレンダリングされてから撮影される。
+    ...(isMobileVrt && {
+      viewport: {
+        defaultViewport: 'iphone14',
+        viewports: {
+          iphone14: {
+            name: 'iPhone 14',
+            styles: { width: '390px', height: '844px' },
+            type: 'mobile',
+          },
+        },
+      },
+    }),
   },
   afterEach: async ({ canvasElement, tags }) => {
     if (!tags?.includes('vrt')) return;
