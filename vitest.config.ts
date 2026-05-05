@@ -44,6 +44,42 @@ export default defineConfig({
                   // レイアウトずれ）は確実に検出される実用域として 100 を採用。
                   allowedMismatchedPixels: 100,
                 },
+                resolveScreenshotPath: ({
+                  root,
+                  testFileDirectory,
+                  screenshotDirectory,
+                  testFileName,
+                  arg,
+                  browserName,
+                  platform,
+                  ext,
+                }) =>
+                  path.join(
+                    root,
+                    testFileDirectory,
+                    screenshotDirectory,
+                    platform,
+                    testFileName,
+                    `${arg}-${browserName}${ext}`,
+                  ),
+                resolveDiffPath: ({
+                  root,
+                  attachmentsDir,
+                  testFileDirectory,
+                  testFileName,
+                  arg,
+                  browserName,
+                  platform,
+                  ext,
+                }) =>
+                  path.join(
+                    root,
+                    attachmentsDir,
+                    testFileDirectory,
+                    platform,
+                    testFileName,
+                    `${arg}-${browserName}${ext}`,
+                  ),
               },
             },
           },

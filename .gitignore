@@ -50,8 +50,6 @@ data/*.db
 
 # Visual regression: Linux baselines only are committed
 # (macOS/Windows local runs produce platform-suffixed PNGs that are throwaway)
-**/__screenshots__/**/*-darwin.png
-**/__screenshots__/**/*-win32.png
-**/__screenshots__/**/*-actual-*.png
-**/__screenshots__/**/*-diff-*.png
+**/__screenshots__/darwin/
+**/__screenshots__/win32/
 .vitest-attachments/

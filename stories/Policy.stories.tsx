@@ -15,17 +15,17 @@ export default meta;
 type Story = StoryObj<typeof PolicyView>;
 
 export const Terms: Story = {
-  name: "利用規約",
+  name: "Terms of Service",
   args: termsContent,
 };
 
 export const Privacy: Story = {
-  name: "プライバシーポリシー",
+  name: "Privacy Policy",
   args: privacyContent,
 };
 
 export const Minimal: Story = {
-  name: "最小構成（構造確認用）",
+  name: "Minimal Configuration (For Layout Verification)",
   args: {
     title: "サンプルポリシー",
     lastUpdated: "2026-05-05",
