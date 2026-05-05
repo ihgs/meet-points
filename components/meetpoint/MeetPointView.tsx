@@ -182,7 +182,7 @@ export function MeetPointView({
       </header>
 
       <div className="flex-1 grid grid-cols-[380px_1fr] max-[900px]:grid-cols-1 min-h-0">
-        <aside className="border-r border-line max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-b-line px-6 pt-[22px] pb-[100px] bg-page overflow-y-auto">
+        <aside className="border-r border-line max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-b-line px-6 pt-[22px] pb-[100px] max-[900px]:pb-6 bg-page overflow-y-auto">
           <MemberList
             members={members}
             stations={stations}
@@ -202,7 +202,7 @@ export function MeetPointView({
             onQueryChange={updateCandidateQuery}
           />
 
-          <div className="sticky bottom-0 -mx-6 -mb-[100px] mt-[14px] px-6 pb-6 pt-[14px]" style={{ background: 'linear-gradient(to top, var(--color-page) 60%, transparent)' }}>
+          <div className="sticky bottom-0 -mx-6 -mb-[100px] mt-[14px] px-6 pb-6 pt-[14px] max-[900px]:static max-[900px]:mx-0 max-[900px]:mb-0" style={{ background: 'linear-gradient(to top, var(--color-page) 60%, transparent)' }}>
             <button
               className="w-full h-[42px] border-0 rounded-sm bg-fg text-white text-sm font-semibold cursor-pointer flex items-center justify-center gap-2 transition-opacity hover:opacity-90 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
               disabled={!canAttemptSearch || loading}
