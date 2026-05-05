@@ -8,6 +8,9 @@ import { CandidateList } from './CandidateList';
 import { ResultCardCompact } from './ResultCardCompact';
 import { ResultCardDetail } from './ResultCardDetail';
 import { ResultCardRanking } from './ResultCardRanking';
+import { CoverageDialogView } from './CoverageDialogView';
+
+const COVERAGE_REGION = '関東近辺';
 
 type SortKey = 'balanced' | 'time' | 'fare' | 'fairness';
 type CardStyle = 'compact' | 'detail' | 'ranking';
@@ -44,6 +47,13 @@ export function MeetPointView({
   const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState<SortKey>('balanced');
   const [cardStyle, setCardStyle] = useState<CardStyle>('compact');
+  const [coverageOpen, setCoverageOpen] = useState(false);
+
+  const coverageLines = useMemo(() => {
+    const set = new Set<string>();
+    for (const s of stations) for (const l of s.lines) set.add(l);
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'ja'));
+  }, [stations]);
 
   useEffect(() => {
     getStations().then(setStations);
@@ -176,10 +186,30 @@ export function MeetPointView({
           <span className="text-fg-3 font-normal text-xs ml-1">— 待ち合わせ駅検索</span>
         </div>
         <div className="flex items-center gap-3.5 text-fg-3 text-xs">
-          <span>{stations.length > 0 ? `${stations.length}駅対応` : '東京近郊 30駅対応'}</span>
+          <button
+            type="button"
+            onClick={() => setCoverageOpen(true)}
+            aria-label={`対応エリア: ${COVERAGE_REGION}（${stations.length > 0 ? stations.length.toLocaleString() : 30}駅）。クリックで対応路線一覧を表示`}
+            className="flex items-center gap-1 px-1.5 py-0.5 text-fg-3 hover:text-fg hover:bg-soft rounded-sm border border-transparent hover:border-line transition-colors cursor-pointer"
+          >
+            <span>{COVERAGE_REGION}</span>
+            <span className="font-num">{stations.length > 0 ? stations.length.toLocaleString() : '30'}</span>
+            <span>駅対応</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" /><path d="M12 8h0M12 11v5" />
+            </svg>
+          </button>
           <kbd className="font-num text-[11px] px-1.5 py-0.5 border border-line rounded-sm bg-soft">v0.1</kbd>
         </div>
       </header>
+
+      <CoverageDialogView
+        open={coverageOpen}
+        region={COVERAGE_REGION}
+        stationCount={stations.length}
+        lines={coverageLines}
+        onClose={() => setCoverageOpen(false)}
+      />
 
       <div className="flex-1 grid grid-cols-[380px_1fr] max-[900px]:grid-cols-1 min-h-0">
         <aside className="border-r border-line max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-b-line px-6 pt-[22px] pb-[100px] max-[900px]:pb-6 bg-page overflow-y-auto">
