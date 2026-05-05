@@ -12,9 +12,11 @@ type StationInputProps = {
   autoFocus?: boolean;
   removable?: boolean;
   onRemove?: () => void;
+  error?: string | null;
+  onQueryChange?: (query: string) => void;
 };
 
-export function StationInput({ value, onChange, stations, placeholder, autoFocus, removable, onRemove }: StationInputProps) {
+export function StationInput({ value, onChange, stations, placeholder, autoFocus, removable, onRemove, error, onQueryChange }: StationInputProps) {
   const stationList = stations && stations.length > 0 ? stations : FALLBACK_STATIONS;
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -26,10 +28,15 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
   useEffect(() => {
     if (value) {
       const s = stationList.find(st => st.id === value);
-      setQuery(s ? s.name : '');
+      const next = s ? s.name : '';
+      setQuery(next);
+      onQueryChange?.(next);
     } else {
       setQuery('');
+      onQueryChange?.('');
     }
+    // onQueryChange は呼び出し側で安定参照にする想定（依存に含めない）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, stationList]);
 
   useEffect(() => {
@@ -51,12 +58,21 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
   const pick = (id: string, name: string) => {
     onChange(id);
     setQuery(name);
+    onQueryChange?.(name);
     setOpen(false);
   };
 
+  const hasError = !!error;
+
   return (
     <div className="relative min-w-0" ref={wrapRef}>
-      <div className="flex items-center h-9 border border-line rounded-sm bg-card transition-[border-color,box-shadow] focus-within:border-accent focus-within:shadow-[0_0_0_3px_var(--color-accent-soft)]">
+      <div
+        className={`flex items-center h-9 border rounded-sm bg-card transition-[border-color,box-shadow] ${
+          hasError
+            ? 'border-bad focus-within:border-bad focus-within:shadow-[0_0_0_3px_oklch(0.62_0.18_25/0.18)]'
+            : 'border-line focus-within:border-accent focus-within:shadow-[0_0_0_3px_var(--color-accent-soft)]'
+        }`}
+      >
         <svg className="text-fg-3 ml-2.5 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="10" r="3" />
           <path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8z" />
@@ -65,12 +81,22 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
           autoFocus={autoFocus}
           value={query}
           placeholder={placeholder}
+          aria-invalid={hasError || undefined}
           className="flex-1 min-w-0 border-0 outline-none bg-transparent px-2.5 h-full text-sm text-fg placeholder:text-[oklch(0.72_0.008_260)]"
           onChange={(e) => {
-            setQuery(e.target.value);
+            const next = e.target.value;
+            setQuery(next);
+            onQueryChange?.(next);
             setOpen(true);
             setHighlight(0);
-            if (!e.target.value) onChange(null);
+            if (!next) {
+              onChange(null);
+            } else if (value) {
+              // 既に選択済みのテキストを書き換えた場合は stationId をクリアして
+              // 「入力欄に文字はあるが選択は無効」という unknown 状態に落とす。
+              const selected = stationList.find(st => st.id === value);
+              if (selected && selected.name !== next) onChange(null);
+            }
           }}
           onFocus={() => setOpen(true)}
           onCompositionStart={() => { composingRef.current = true; }}
@@ -102,6 +128,11 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
           </button>
         )}
       </div>
+      {hasError && (
+        <p role="alert" className="m-0 mt-1 text-[11px] text-bad leading-tight">
+          {error}
+        </p>
+      )}
       {open && matches.length > 0 && (
         <ul className="absolute top-[calc(100%+4px)] left-0 right-0 z-50 m-0 p-1 list-none bg-card border border-line rounded shadow-[0_1px_0_rgba(20,20,30,.04),0_8px_24px_rgba(20,20,30,.06)] max-h-[280px] overflow-y-auto">
           {matches.map((s, i) => (

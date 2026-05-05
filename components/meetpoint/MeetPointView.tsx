@@ -15,12 +15,21 @@ type CardStyle = 'compact' | 'detail' | 'ranking';
 type MeetPointViewProps = {
   initialMembers?: Member[];
   initialCandidates?: Candidate[];
+  initialMemberQueries?: Record<string, string>;
+  initialCandidateQueries?: Record<string, string>;
+  initialValidationVisible?: boolean;
 };
 
 const tabBtn = (active: boolean) =>
   `border-0 px-2.5 py-[5px] text-xs rounded-[5px] cursor-pointer ${active ? 'bg-fg-2 text-white' : 'bg-transparent text-fg-2'}`;
 
-export function MeetPointView({ initialMembers, initialCandidates }: MeetPointViewProps) {
+export function MeetPointView({
+  initialMembers,
+  initialCandidates,
+  initialMemberQueries,
+  initialCandidateQueries,
+  initialValidationVisible,
+}: MeetPointViewProps) {
   const [stations, setStations] = useState<Station[]>([]);
   const [members, setMembers] = useState<Member[]>(initialMembers ?? [
     { id: 'm1', stationId: 'shinjuku' },
@@ -28,6 +37,9 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
     { id: 'm3', stationId: 'kichijoji' },
   ]);
   const [candidates, setCandidates] = useState<Candidate[]>(initialCandidates ?? []);
+  const [memberQueries, setMemberQueries] = useState<Record<string, string>>(initialMemberQueries ?? {});
+  const [candidateQueries, setCandidateQueries] = useState<Record<string, string>>(initialCandidateQueries ?? {});
+  const [validationVisible, setValidationVisible] = useState<boolean>(initialValidationVisible ?? false);
   const [results, setResults] = useState<SearchResult[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [sort, setSort] = useState<SortKey>('balanced');
@@ -38,14 +50,45 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
   }, []);
 
   const validMembers = members.filter(m => m.stationId);
-  const canSearch = validMembers.length >= 2;
 
-  const runSearch = async () => {
-    if (!canSearch) return;
+  type Status = 'valid' | 'unknown' | 'empty';
+  const memberStatus = (m: Member): Status => {
+    if (m.stationId) return 'valid';
+    return (memberQueries[m.id] ?? '').trim() ? 'unknown' : 'empty';
+  };
+  const candidateStatus = (c: Candidate): Status => {
+    if (c.stationId) return 'valid';
+    return (candidateQueries[c.id] ?? '').trim() ? 'unknown' : 'empty';
+  };
+
+  const memberErrorAt = (i: number): string | null => {
+    if (!validationVisible) return null;
+    const m = members[i];
+    const s = memberStatus(m);
+    if (s === 'unknown') return `「${(memberQueries[m.id] ?? '').trim()}」という駅は登録されていません`;
+    if (s === 'empty' && i < 2) return '駅名を入力してください';
+    return null;
+  };
+  const candidateErrorAt = (i: number): string | null => {
+    if (!validationVisible) return null;
+    const c = candidates[i];
+    const s = candidateStatus(c);
+    if (s === 'unknown') return `「${(candidateQueries[c.id] ?? '').trim()}」という駅は登録されていません`;
+    return null;
+  };
+
+  const memberErrors = members.map((_, i) => memberErrorAt(i));
+  const candidateErrors = candidates.map((_, i) => candidateErrorAt(i));
+  const hasInputErrors = memberErrors.some(Boolean) || candidateErrors.some(Boolean);
+
+  // 「入力欄になにか入っている（valid または unknown）」を 2 つ以上持つ場合に検索ボタンを有効化。
+  // unknown でも押せるようにすることで、エラーメッセージを表示する経路をユーザーに与える。
+  const filledCount = members.filter(m => memberStatus(m) !== 'empty').length;
+  const canAttemptSearch = filledCount >= 2;
+
+  const executeSearch = async (memIds: string[], candIds: string[]) => {
     setLoading(true);
     try {
-      const memIds = validMembers.map(m => m.stationId!);
-      const candIds = candidates.filter(c => c.stationId).map(c => c.stationId!);
       let r = await search(memIds, candIds);
       if (candIds.length === 0) {
         r = r.filter(x => !memIds.includes(x.candId)).slice(0, 8);
@@ -56,7 +99,32 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
     }
   };
 
-  useEffect(() => { runSearch(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const runSearch = async () => {
+    const hasUnknown =
+      members.some(m => memberStatus(m) === 'unknown') ||
+      candidates.some(c => candidateStatus(c) === 'unknown');
+    const requiredEmpty = members.slice(0, 2).some(m => memberStatus(m) === 'empty');
+    if (hasUnknown || requiredEmpty || validMembers.length < 2) {
+      setValidationVisible(true);
+      return;
+    }
+
+    setValidationVisible(false);
+    const memIds = validMembers.map(m => m.stationId!);
+    const candIds = candidates.filter(c => c.stationId).map(c => c.stationId!);
+    await executeSearch(memIds, candIds);
+  };
+
+  useEffect(() => {
+    // 初回マウント: 入力が揃っていれば自動検索（既存挙動）。
+    // validation エラー表示の story では自動検索しないようスキップ。
+    if (initialValidationVisible) return;
+    const memIds = members.filter(m => m.stationId).map(m => m.stationId!);
+    if (memIds.length < 2) return;
+    const candIds = candidates.filter(c => c.stationId).map(c => c.stationId!);
+    void executeSearch(memIds, candIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const sorted = useMemo(() => {
     if (!results) return null;
@@ -76,6 +144,11 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
     setMembers(m => m.length <= 2 ? m : m.filter((_, j) => j !== i));
   const addMember = () =>
     setMembers(m => m.length >= 10 ? m : [...m, { id: crypto.randomUUID(), stationId: null }]);
+  const updateMemberQuery = (i: number, q: string) => {
+    const id = members[i]?.id;
+    if (!id) return;
+    setMemberQueries(prev => prev[id] === q ? prev : { ...prev, [id]: q });
+  };
 
   const updateCandidate = (i: number, stationId: string | null) =>
     setCandidates(c => c.map((x, j) => j === i ? { ...x, stationId } : x));
@@ -83,6 +156,11 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
     setCandidates(c => c.filter((_, j) => j !== i));
   const addCandidate = () =>
     setCandidates(c => [...c, { id: crypto.randomUUID(), stationId: null }]);
+  const updateCandidateQuery = (i: number, q: string) => {
+    const id = candidates[i]?.id;
+    if (!id) return;
+    setCandidateQueries(prev => prev[id] === q ? prev : { ...prev, [id]: q });
+  };
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
@@ -111,6 +189,8 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
             onUpdate={updateMember}
             onRemove={removeMember}
             onAdd={addMember}
+            errors={memberErrors}
+            onQueryChange={updateMemberQuery}
           />
           <CandidateList
             candidates={candidates}
@@ -118,12 +198,14 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
             onUpdate={updateCandidate}
             onRemove={removeCandidate}
             onAdd={addCandidate}
+            errors={candidateErrors}
+            onQueryChange={updateCandidateQuery}
           />
 
           <div className="sticky bottom-0 -mx-6 -mb-[100px] mt-[14px] px-6 pb-6 pt-[14px]" style={{ background: 'linear-gradient(to top, var(--color-page) 60%, transparent)' }}>
             <button
               className="w-full h-[42px] border-0 rounded-sm bg-fg text-white text-sm font-semibold cursor-pointer flex items-center justify-center gap-2 transition-opacity hover:opacity-90 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
-              disabled={!canSearch || loading}
+              disabled={!canAttemptSearch || loading}
               onClick={runSearch}
             >
               {loading ? (
@@ -137,7 +219,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
                 </>
               )}
             </button>
-            {!canSearch && (
+            {!canAttemptSearch && !validationVisible && (
               <p className="text-xs text-fg-3 text-center mt-2 m-0">2人以上の最寄駅を入力してください</p>
             )}
           </div>
@@ -147,9 +229,9 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
           <div className="flex items-baseline justify-between mb-[14px] flex-wrap gap-2.5">
             <div>
               <h2 className="m-0 text-lg font-semibold tracking-tight">
-                {loading ? '検索中…' : sorted ? `${sorted.length}件の候補駅` : '候補駅'}
+                {loading ? '検索中…' : hasInputErrors ? '候補駅' : sorted ? `${sorted.length}件の候補駅` : '候補駅'}
               </h2>
-              {sorted && sorted[0] && !loading && (
+              {sorted && sorted[0] && !loading && !hasInputErrors && (
                 <div className="text-fg-3 text-xs">
                   おすすめは <strong className="font-num font-semibold text-fg">{sorted[0].candName}駅</strong>
                   ・ 合計 <strong className="font-num font-semibold text-fg">{sorted[0].total}分</strong>
@@ -158,7 +240,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
               )}
             </div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              {sorted && sorted.length > 0 && !loading && (
+              {sorted && sorted.length > 0 && !loading && !hasInputErrors && (
                 <div className="flex items-center gap-1 p-[3px] bg-card border border-line rounded-sm">
                   {(['balanced', 'time', 'fare', 'fairness'] as const).map((key, _, arr) => {
                     const labels = { balanced: 'バランス', time: '時間', fare: '運賃', fairness: '公平性' };
@@ -170,7 +252,7 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
                   })}
                 </div>
               )}
-              {sorted && sorted.length > 0 && !loading && (
+              {sorted && sorted.length > 0 && !loading && !hasInputErrors && (
                 <div className="flex items-center gap-1 p-[3px] bg-card border border-line rounded-sm">
                   {(['compact', 'detail', 'ranking'] as const).map(key => {
                     const labels = { compact: 'コンパクト', detail: '詳細', ranking: 'ランキング' };
@@ -189,6 +271,23 @@ export function MeetPointView({ initialMembers, initialCandidates }: MeetPointVi
             <div className="bg-card border border-line rounded-lg px-8 py-12 text-center">
               <div className="size-7 border-2 border-line border-t-accent rounded-full mx-auto mb-3.5 animate-spin" />
               <div className="text-fg-3 text-[13px]">各駅への所要時間を計算中…</div>
+            </div>
+          ) : hasInputErrors ? (
+            <div role="alert" className="bg-card border border-bad rounded-lg px-8 py-10 text-center">
+              <div className="size-14 rounded-full bg-soft mx-auto mb-4 grid place-items-center text-bad">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="9" /><path d="M12 8v4M12 16h0" />
+                </svg>
+              </div>
+              <h3 className="m-0 mb-1.5 text-bad text-[15px] font-semibold">入力内容を確認してください</h3>
+              <ul className="m-0 mt-2 list-none p-0 text-[13px] leading-relaxed text-fg-2 flex flex-col gap-1">
+                {memberErrors.map((e, i) => e ? (
+                  <li key={`me-${members[i].id}`}><span className="font-num text-fg-3 mr-1.5">{i + 1}人目</span>{e}</li>
+                ) : null)}
+                {candidateErrors.map((e, i) => e ? (
+                  <li key={`ce-${candidates[i].id}`}><span className="font-num text-fg-3 mr-1.5">候補{i + 1}</span>{e}</li>
+                ) : null)}
+              </ul>
             </div>
           ) : !sorted || sorted.length === 0 ? (
             <div className="bg-card border border-dashed border-line rounded-lg px-8 py-14 text-center text-fg-3">
