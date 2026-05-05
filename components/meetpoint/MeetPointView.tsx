@@ -34,10 +34,14 @@ export function MeetPointView({
   initialValidationVisible,
 }: MeetPointViewProps) {
   const [stations, setStations] = useState<Station[]>([]);
+  // 本番データ (public/data/stations.json) の駅 ID は日本語名そのまま (例: '新宿')。
+  // FALLBACK_STATIONS のローマ字 ID をデフォルトに置くと、本番データ読込後に
+  // stationList から見つからず stationId が "ghost-set" のまま残ってしまう
+  // （memberStatus が 'valid' になり続けてバリデーションを素通りする）。
+  // 新規アクセスは空欄2件で開始する。
   const [members, setMembers] = useState<Member[]>(initialMembers ?? [
-    { id: 'm1', stationId: 'shinjuku' },
-    { id: 'm2', stationId: 'yokohama' },
-    { id: 'm3', stationId: 'kichijoji' },
+    { id: 'm1', stationId: null },
+    { id: 'm2', stationId: null },
   ]);
   const [candidates, setCandidates] = useState<Candidate[]>(initialCandidates ?? []);
   const [memberQueries, setMemberQueries] = useState<Record<string, string>>(initialMemberQueries ?? {});

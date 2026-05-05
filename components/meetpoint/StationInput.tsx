@@ -28,14 +28,21 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
   useEffect(() => {
     if (value) {
       const s = stationList.find(st => st.id === value);
-      const next = s ? s.name : '';
-      setQuery(next);
-      onQueryChange?.(next);
+      if (s) {
+        setQuery(s.name);
+        onQueryChange?.(s.name);
+      } else {
+        // stationList に存在しない stationId が渡された場合 (古い fallback 由来の
+        // ID 混入や、データ更新で消えた駅など) は親の stationId をクリアして整合を取る。
+        // クリアしないと「見た目は空欄だが内部的には valid」のゴースト状態に陥り、
+        // バリデーションが素通りしてしまう。
+        onChange(null);
+      }
     } else {
       setQuery('');
       onQueryChange?.('');
     }
-    // onQueryChange は呼び出し側で安定参照にする想定（依存に含めない）
+    // onChange / onQueryChange は呼び出し側で安定参照にする想定（依存に含めない）
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, stationList]);
 
