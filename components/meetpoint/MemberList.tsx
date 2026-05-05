@@ -7,9 +7,11 @@ type MemberListProps = {
   onUpdate: (index: number, stationId: string | null) => void;
   onRemove: (index: number) => void;
   onAdd: () => void;
+  errors?: (string | null)[];
+  onQueryChange?: (index: number, query: string) => void;
 };
 
-export function MemberList({ members, stations, onUpdate, onRemove, onAdd }: MemberListProps) {
+export function MemberList({ members, stations, onUpdate, onRemove, onAdd, errors, onQueryChange }: MemberListProps) {
   return (
     <div className="mb-[22px]">
       <div className="flex items-baseline justify-between mb-2">
@@ -26,6 +28,8 @@ export function MemberList({ members, stations, onUpdate, onRemove, onAdd }: Mem
               value={m.stationId}
               stations={stations}
               onChange={(id) => onUpdate(i, id)}
+              onQueryChange={onQueryChange ? (q) => onQueryChange(i, q) : undefined}
+              error={errors?.[i] ?? null}
               placeholder="駅名を入力（例: 新宿）"
               removable={members.length > 2}
               onRemove={() => onRemove(i)}

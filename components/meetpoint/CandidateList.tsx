@@ -7,9 +7,11 @@ type CandidateListProps = {
   onUpdate: (index: number, stationId: string | null) => void;
   onRemove: (index: number) => void;
   onAdd: () => void;
+  errors?: (string | null)[];
+  onQueryChange?: (index: number, query: string) => void;
 };
 
-export function CandidateList({ candidates, stations, onUpdate, onRemove, onAdd }: CandidateListProps) {
+export function CandidateList({ candidates, stations, onUpdate, onRemove, onAdd, errors, onQueryChange }: CandidateListProps) {
   return (
     <div className="mb-[22px]">
       <div className="flex items-baseline justify-between mb-2">
@@ -28,6 +30,8 @@ export function CandidateList({ candidates, stations, onUpdate, onRemove, onAdd 
                 value={c.stationId}
                 stations={stations}
                 onChange={(id) => onUpdate(i, id)}
+                onQueryChange={onQueryChange ? (q) => onQueryChange(i, q) : undefined}
+                error={errors?.[i] ?? null}
                 placeholder="候補にしたい駅名"
                 removable
                 onRemove={() => onRemove(i)}

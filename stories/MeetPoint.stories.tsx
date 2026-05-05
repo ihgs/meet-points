@@ -74,3 +74,48 @@ export const EmptyInputs: Story = {
     initialCandidates: [],
   },
 };
+
+export const ErrorEmptyAfterSearch: Story = {
+  args: {
+    initialMembers: [
+      { id: "m1", stationId: null },
+      { id: "m2", stationId: null },
+    ],
+    initialCandidates: [],
+    initialValidationVisible: true,
+  },
+};
+
+export const ErrorUnknownStation: Story = {
+  args: {
+    initialMembers: [
+      { id: "m1", stationId: null },
+      { id: "m2", stationId: "横浜" },
+    ],
+    initialCandidates: [],
+    initialMemberQueries: {
+      m1: "存在しない駅",
+    },
+    initialValidationVisible: true,
+  },
+};
+
+export const ErrorMixedEmptyAndUnknown: Story = {
+  args: {
+    initialMembers: [
+      { id: "m1", stationId: null },
+      { id: "m2", stationId: null },
+      { id: "m3", stationId: null },
+    ],
+    initialCandidates: [
+      { id: "c1", stationId: null },
+    ],
+    initialMemberQueries: {
+      m3: "なんとか駅",
+    },
+    initialCandidateQueries: {
+      c1: "幻の駅",
+    },
+    initialValidationVisible: true,
+  },
+};
