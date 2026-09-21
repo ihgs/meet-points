@@ -17,7 +17,8 @@ type StationInputProps = {
 };
 
 export function StationInput({ value, onChange, stations, placeholder, autoFocus, removable, onRemove, error, onQueryChange }: StationInputProps) {
-  const stationList = stations && stations.length > 0 ? stations : FALLBACK_STATIONS;
+  const isStationListLoaded = !!(stations && stations.length > 0);
+  const stationList = isStationListLoaded ? stations! : FALLBACK_STATIONS;
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [highlight, setHighlight] = useState(0);
@@ -31,11 +32,13 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
       if (s) {
         setQuery(s.name);
         onQueryChange?.(s.name);
-      } else {
-        // stationList に存在しない stationId が渡された場合 (古い fallback 由来の
-        // ID 混入や、データ更新で消えた駅など) は親の stationId をクリアして整合を取る。
+      } else if (isStationListLoaded) {
+        // 本物の駅リスト読込済みで該当 ID が見つからないなら、古い fallback 由来 ID
+        // などが残っているケース。親の stationId をクリアして整合を取る。
         // クリアしないと「見た目は空欄だが内部的には valid」のゴースト状態に陥り、
         // バリデーションが素通りしてしまう。
+        // 読込前 (FALLBACK_STATIONS にフォールバック中) は判定保留にして、
+        // 本物のデータ到着時に再度この effect が走るのを待つ。
         onChange(null);
       }
     } else {
@@ -44,7 +47,7 @@ export function StationInput({ value, onChange, stations, placeholder, autoFocus
     }
     // onChange / onQueryChange は呼び出し側で安定参照にする想定（依存に含めない）
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, stationList]);
+  }, [value, stationList, isStationListLoaded]);
 
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
